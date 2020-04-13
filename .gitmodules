@@ -1,0 +1,3 @@
+[submodule "Floppy"]
+	path = src/Floppy
+	url = https://github.com/Wekaj/Floppy
