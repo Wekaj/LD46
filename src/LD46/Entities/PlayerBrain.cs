@@ -1,8 +1,10 @@
 ﻿using Floppy.Extensions;
 using Floppy.Input;
 using Floppy.Physics;
+using LD46.Graphics;
 using LD46.Input;
 using LD46.Levels;
+using LD46.Physics;
 using Microsoft.Xna.Framework;
 using System;
 
@@ -32,14 +34,28 @@ namespace LD46.Entities {
                 return;
             }
 
+            float speedModifier = 1f;
+
+            float waterHeight = level.TileMap.Height * PhysicsConstants.TileSize - level.WaterLevel;
+
+            if (body.Position.Y + body.Bounds.Center.Y > waterHeight) {
+                body.Position = body.Position.SetY(waterHeight - body.Bounds.Center.Y);
+
+                if (body.Velocity.Y > 0f) {
+                    body.Velocity = body.Velocity.SetY(0f);
+                }
+
+                speedModifier = 0.5f;
+            }
+
             float speed = body.Velocity.Length();
 
             if (speed < entity.DangerSpeed) {
                 if (_bindings.IsPressed(Bindings.MoveRight)) {
-                    body.Velocity = body.Velocity.SetX(_movementSpeed);
+                    body.Velocity = body.Velocity.SetX(_movementSpeed * speedModifier);
                 }
                 if (_bindings.IsPressed(Bindings.MoveLeft)) {
-                    body.Velocity = body.Velocity.SetX(-_movementSpeed);
+                    body.Velocity = body.Velocity.SetX(-_movementSpeed * speedModifier);
                 }
 
                 if (!_bindings.IsPressed(Bindings.MoveRight) && !_bindings.IsPressed(Bindings.MoveLeft)) {

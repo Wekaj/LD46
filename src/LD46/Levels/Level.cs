@@ -36,6 +36,8 @@ namespace LD46.Levels {
 
         public Vector2 CameraCenter { get; private set; }
 
+        public float WaterLevel { get; private set; }
+
         public void Update(float deltaTime) {
             foreach (Entity entity in EntityWorld.Entities) {
                 entity.Brain?.Update(entity, this, deltaTime);
@@ -59,6 +61,8 @@ namespace LD46.Levels {
             if (PhysicsWorld.TryGetBody(_playerEntity.BodyID, out Body? playerBody)) {
                 CameraCenter = playerBody.Position + playerBody.Bounds.Center;
             }
+
+            WaterLevel += 4f * deltaTime;
         }
 
         private void SetupPlayer(InputBindings bindings) {
