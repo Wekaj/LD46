@@ -18,7 +18,7 @@ namespace LD46.Views {
         }
 
         public void Draw(Level level) {
-            _camera.Position = Vector2.Floor(level.CameraCenter - _graphicsDevice.Viewport.Bounds.Size.ToVector2() / 2f);
+            _camera.Position = Vector2.Round(level.CameraCenter - _graphicsDevice.Viewport.Bounds.Size.ToVector2() / 2f);
 
             _tileMapView.Draw(level, _camera);
             _entitiesView.Draw(level, _camera);

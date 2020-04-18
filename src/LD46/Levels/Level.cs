@@ -81,6 +81,7 @@ namespace LD46.Levels {
             torchBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
             torchBody.Gravity = new Vector2(0f, 500f);
             torchBody.Friction = 1f;
+            torchBody.BounceFactor = 0.5f;
 
             _torchEntity.BodyID = torchBody.ID;
 

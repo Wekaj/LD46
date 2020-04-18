@@ -30,7 +30,7 @@ namespace LD46.Views {
 
         private void DrawEntity(Entity entity, Level level) {
             if (level.PhysicsWorld.TryGetBody(entity.BodyID, out Body? body)) {
-                _spriteBatch.Draw(_playerTexture, Vector2.Floor(body.Position), Color.White);
+                _spriteBatch.Draw(_playerTexture, Vector2.Round(body.Position), Color.White);
             }
         }
     }

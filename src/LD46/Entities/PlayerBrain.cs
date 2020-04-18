@@ -11,8 +11,8 @@ namespace LD46.Entities {
         private const float _movementSpeed = 150f;
         private const float _jumpImpulse = 300f;
         private const float _jumpTime = 0.1f;
-        private const float _kickImpulse = 300f;
-        private const float _kickHMultiplier = 5f;
+        private const float _kickImpulse = 500f;
+        private const float _kickHMultiplier = 10f;
         private const float _kickDistance = 24f;
 
         private readonly InputBindings _bindings;

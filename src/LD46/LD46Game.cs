@@ -39,7 +39,7 @@ namespace LD46 {
             Container container = CreateContainer();
 
             _pixelScaler = container.GetInstance<PixelScaler>();
-            _pixelScaler.Scale = 3;
+            _pixelScaler.Scale = 2;
 
             InitializeScreens(container);
         }
