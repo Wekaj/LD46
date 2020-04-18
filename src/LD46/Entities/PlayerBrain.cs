@@ -49,6 +49,8 @@ namespace LD46.Entities {
 
             float speed = body.Velocity.Length();
 
+            body.IgnoresPlatforms = _bindings.IsPressed(Bindings.Drop);
+
             if (speed < entity.DangerSpeed) {
                 if (_bindings.IsPressed(Bindings.MoveRight)) {
                     body.Velocity = body.Velocity.SetX(_movementSpeed * speedModifier);
