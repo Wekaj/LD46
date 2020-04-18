@@ -22,6 +22,10 @@ namespace LD46.Views {
             _waterView = waterView;
         }
 
+        public void Update(float deltaTime) {
+            _waterView.Update(deltaTime);
+        }
+
         public void Draw(Level level) {
             _camera.Position = Vector2.Round(GraphicsConstants.PhysicsToView(level.CameraCenter) - _graphicsDevice.Viewport.Bounds.Size.ToVector2() / 2f);
 

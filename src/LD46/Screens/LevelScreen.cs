@@ -26,7 +26,11 @@ namespace LD46.Screens {
                 _screens.TransitionTo<LevelScreen>();
             }
 
-            Level.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            Level.Update(deltaTime);
+
+            _levelView.Update(deltaTime);
         }
 
         public void Draw(GameTime gameTime) {
