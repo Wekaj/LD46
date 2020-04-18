@@ -10,8 +10,11 @@ using System;
 namespace LD46.Entities {
     public class PlayerBrain : IBrain {
         private const float _movementSpeed = 150f;
+
         private const float _jumpImpulse = 300f;
         private const float _jumpTime = 0.1f;
+        private const int _maxJumps = 2;
+
         private const float _kickImpulse = 300f;
         private const float _kickHMultiplier = 16f;
         private const float _kickDistance = 24f;
@@ -21,6 +24,8 @@ namespace LD46.Entities {
         private readonly int _torchEntityID;
 
         private float _jumpTimer = 0f;
+        private bool _isJumping = false;
+        private int _jumpsLeft = _maxJumps;
 
         public PlayerBrain(InputBindings bindings, int torchEntityID) {
             _bindings = bindings;
@@ -45,6 +50,7 @@ namespace LD46.Entities {
                 }
 
                 speedModifier = 0.5f;
+                _jumpsLeft = _maxJumps;
             }
 
             float speed = body.Velocity.Length();
@@ -64,19 +70,29 @@ namespace LD46.Entities {
                 }
             }
 
-            if (_bindings.JustPressed(Bindings.Jump)) {
+            if (body.Contact.Y > 0f) {
+                _jumpsLeft = _maxJumps;
+            }
+
+            if (_bindings.JustPressed(Bindings.Jump) && _jumpsLeft > 0) {
                 body.Velocity = body.Velocity.SetY(0f);
                 body.Impulse += new Vector2(0f, -_jumpImpulse * Math.Min(Math.Max(_jumpTime - _jumpTimer, 0f), deltaTime) / _jumpTime);
 
-                _jumpTimer += deltaTime;
+                _jumpTimer = deltaTime;
+                _isJumping = true;
+                _jumpsLeft--;
 
                 KickTorch(body, level);
             }
 
-            if (_bindings.IsPressed(Bindings.Jump) && _jumpTimer < _jumpTime) {
+            if (_bindings.IsPressed(Bindings.Jump) && _isJumping && _jumpTimer < _jumpTime) {
                 body.Impulse += new Vector2(0f, -_jumpImpulse * Math.Min(Math.Max(_jumpTime - _jumpTimer, 0f), deltaTime) / _jumpTime);
 
                 _jumpTimer += deltaTime;
+            }
+
+            if (_jumpTimer >= _jumpTime) {
+                _isJumping = false;
             }
 
             if (!_bindings.IsPressed(Bindings.Jump)) {

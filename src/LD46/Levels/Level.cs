@@ -82,7 +82,7 @@ namespace LD46.Levels {
                 waterSpeedModifier *= Math.Max(yDistance * yDistance / 100000f, 1f);
             }
 
-            //WaterLevel += 32f * waterSpeedModifier * deltaTime;
+            WaterLevel += 32f * waterSpeedModifier * deltaTime;
         }
 
         private void SetupPlayer(InputBindings bindings) {
