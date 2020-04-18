@@ -50,7 +50,7 @@ namespace LD46.Levels {
 
         public Vector2 CameraCenter { get; private set; }
 
-        public float WaterLevel { get; private set; } = -64f;
+        public float WaterLevel { get; private set; } = -4f;
 
         public void Update(float deltaTime) {
             foreach (Entity entity in EntityWorld.Entities) {
@@ -82,26 +82,26 @@ namespace LD46.Levels {
                 waterSpeedModifier *= Math.Max(yDistance * yDistance / 100000f, 1f);
             }
 
-            WaterLevel += 32f * waterSpeedModifier * deltaTime;
+            WaterLevel += 2f * waterSpeedModifier * deltaTime;
         }
 
         private void SetupPlayer(InputBindings bindings) {
             Body playerBody = PhysicsWorld.CreateBody();
-            playerBody.Position = new Vector2(48f, (TileMap.Height - 2) * PhysicsConstants.TileSize);
-            playerBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
-            playerBody.Gravity = new Vector2(0f, 600f);
+            playerBody.Position = new Vector2(3f, TileMap.Height - 2);
+            playerBody.Bounds = new RectangleF(18f / 32f, 18f / 32f, 28f / 32f, 30f / 32f);
+            playerBody.Gravity = new Vector2(0f, 37.5f);
 
             _playerEntity.BodyID = playerBody.ID;
 
             _playerEntity.Brain = new PlayerBrain(bindings, _torchEntity.ID);
 
-            _playerEntity.DangerSpeed = 300f;
-            _playerEntity.DangerFriction = 10f;
+            _playerEntity.DangerSpeed = 18.8f;
+            _playerEntity.DangerFriction = 0.6f;
         }
 
         private void SetupTorch() {
             Body torchBody = PhysicsWorld.CreateBody();
-            torchBody.Position = new Vector2(64f, (TileMap.Height - 2) * PhysicsConstants.TileSize);
+            torchBody.Position = new Vector2(4, (TileMap.Height - 2) * PhysicsConstants.TileSize);
             torchBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
             torchBody.Gravity = new Vector2(0f, 300f);
             torchBody.Friction = 1f;

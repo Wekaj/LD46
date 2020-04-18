@@ -1,6 +1,7 @@
 ﻿using Floppy.Graphics;
 using Floppy.Physics;
 using LD46.Entities;
+using LD46.Graphics;
 using LD46.Levels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -30,7 +31,7 @@ namespace LD46.Views {
 
         private void DrawEntity(Entity entity, Level level) {
             if (level.PhysicsWorld.TryGetBody(entity.BodyID, out Body? body)) {
-                _spriteBatch.Draw(_playerTexture, Vector2.Round(body.Position), Color.White);
+                _spriteBatch.Draw(_playerTexture, Vector2.Round(GraphicsConstants.PhysicsToView(body.Position)), Color.White);
             }
         }
     }

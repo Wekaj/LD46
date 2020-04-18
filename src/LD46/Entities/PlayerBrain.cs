@@ -9,15 +9,15 @@ using System;
 
 namespace LD46.Entities {
     public class PlayerBrain : IBrain {
-        private const float _movementSpeed = 150f;
+        private const float _movementSpeed = 9.4f;
 
-        private const float _jumpImpulse = 300f;
+        private const float _jumpImpulse = 18.8f;
         private const float _jumpTime = 0.1f;
         private const int _maxJumps = 2;
 
-        private const float _kickImpulse = 300f;
+        private const float _kickImpulse = 18.8f;
         private const float _kickHMultiplier = 16f;
-        private const float _kickDistance = 24f;
+        private const float _kickDistance = 1.5f;
 
         private readonly InputBindings _bindings;
 

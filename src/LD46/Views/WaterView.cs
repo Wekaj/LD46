@@ -21,7 +21,7 @@ namespace LD46.Views {
         public void Draw(Level level, Camera2D camera) {
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
 
-            int top = level.TileMap.Height * GraphicsConstants.TileSize - (int)Math.Round(level.WaterLevel);
+            int top = level.TileMap.Height * GraphicsConstants.TileSize - (int)Math.Round(GraphicsConstants.PhysicsToView(level.WaterLevel));
             int bottom = level.TileMap.Height * GraphicsConstants.TileSize + 100;
 
             _spriteBatch.Draw(_pixelTexture, new Rectangle(-1000, top, 2000, bottom - top), Color.SeaGreen);

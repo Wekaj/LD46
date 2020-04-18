@@ -31,15 +31,42 @@ namespace LD46.Views {
         }
 
         private void DrawTile(int x, int y, TileMap tileMap) {
-            Rectangle sourceRectangle = GetSourceRectangle(tileMap[x, y].CollisionType);
+            Rectangle sourceRectangle = GetSourceRectangle(x, y, tileMap);
 
-            _spriteBatch.Draw(_tilesTexture, new Vector2(x, y) * GraphicsConstants.TileSize, sourceRectangle, Color.White);
+            _spriteBatch.Draw(_tilesTexture, new Vector2(x + 0.5f, y + 0.5f) * GraphicsConstants.TileSize, sourceRectangle, 
+                Color.White, 0f, new Vector2(32f, 32f), Vector2.One, SpriteEffects.None, 0f);
         }
 
-        private Rectangle GetSourceRectangle(TileCollisionType collisionType) {
-            int i = (int)collisionType;
+        private Rectangle GetSourceRectangle(int x, int y, TileMap tileMap) {
+            TileCollisionType collisionType = tileMap[x, y].CollisionType;
 
-            return new Rectangle(i * GraphicsConstants.TileSize, 0, GraphicsConstants.TileSize, GraphicsConstants.TileSize);
+            int i = 0;
+
+            switch (collisionType) {
+                case TileCollisionType.Platform: {
+                    i = 1;
+                    break;
+                }
+                case TileCollisionType.Solid: {
+                    if (tileMap.IsSolid(x + 1, y)) {
+                        if (tileMap.IsSolid(x - 1, y)) {
+                            i = 4;
+                        }
+                        else {
+                            i = 3;
+                        }
+                    }
+                    else if (tileMap.IsSolid(x - 1, y)) {
+                        i = 5;
+                    }
+                    else {
+                        i = 2;
+                    }
+                    break;
+                }
+            }
+
+            return new Rectangle(i * 64, 0, 64, 64);
         }
     }
 }
