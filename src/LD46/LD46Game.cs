@@ -1,5 +1,7 @@
 ﻿using Floppy.Graphics;
+using Floppy.Input;
 using Floppy.Screens;
+using LD46.Input;
 using LD46.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +13,8 @@ namespace LD46 {
         private readonly GraphicsDeviceManager _graphics;
 
         private readonly ScreenManager _screens = new ScreenManager();
+
+        private readonly InputBindings _bindings = new InputBindings();
 
         private RenderTargetStack? _renderTargetStack;
         private SpriteBatch? _spriteBatch;
@@ -26,6 +30,8 @@ namespace LD46 {
 
         protected override void Initialize() {
             base.Initialize();
+
+            SetupBindings();
 
             _renderTargetStack = new RenderTargetStack(GraphicsDevice);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -46,6 +52,8 @@ namespace LD46 {
                 Exit();
             }
 
+            _bindings.Update();
+
             _screens.CurrentScreen?.Update(gameTime);
 
             base.Update(gameTime);
@@ -63,12 +71,19 @@ namespace LD46 {
             base.Draw(gameTime);
         }
 
+        private void SetupBindings() {
+            _bindings.Set(Bindings.MoveRight, new KeyboardBinding(Keys.Right), new KeyboardBinding(Keys.D));
+            _bindings.Set(Bindings.MoveLeft, new KeyboardBinding(Keys.Left), new KeyboardBinding(Keys.A));
+            _bindings.Set(Bindings.Jump, new KeyboardBinding(Keys.Space));
+        }
+
         private Container CreateContainer() {
             var container = new Container();
 
             container.RegisterInstance(GraphicsDevice);
             container.RegisterInstance(Content);
             container.RegisterInstance(_screens);
+            container.RegisterInstance(_bindings);
             container.RegisterInstance<IRenderTargetStack>(_renderTargetStack!);
             container.RegisterInstance(_spriteBatch!);
 
