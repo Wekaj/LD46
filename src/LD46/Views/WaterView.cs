@@ -40,6 +40,22 @@ namespace LD46.Views {
 
         public void Draw(Level level, Camera2D camera) {
             _waterOutlineAnimation.Apply(_waterOutlineSprite, _animationTimer);
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
+
+            int startX = (int)Math.Floor(camera.Position.X / _waterSize);
+            int endX = (int)Math.Floor((camera.Position.X + _spriteBatch.GraphicsDevice.Viewport.Width) / _waterSize);
+
+            int top = level.TileMap.Height * GraphicsConstants.TileSize - (int)Math.Round(GraphicsConstants.PhysicsToView(level.WaterLevel));
+
+            for (int x = startX; x <= endX; x++) {
+                _waterOutlineSprite.Draw(_spriteBatch, new Vector2(x * _waterSize, top - _waterSize / 2f));
+            }
+
+            _spriteBatch.End();
+        }
+
+        public void DrawMask(Level level, Camera2D camera) {
             _waterMaskAnimation.Apply(_waterMaskSprite, _animationTimer);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
@@ -51,10 +67,9 @@ namespace LD46.Views {
             int bottom = level.TileMap.Height * GraphicsConstants.TileSize + 100;
 
             for (int x = startX; x <= endX; x++) {
-                _waterOutlineSprite.Draw(_spriteBatch, new Vector2(x * _waterSize, top - _waterSize / 2f));
                 _waterMaskSprite.Draw(_spriteBatch, new Vector2(x * _waterSize, top - _waterSize / 2f));
             }
-            _spriteBatch.Draw(_pixelTexture, new Rectangle(startX * _waterSize, top + _waterSize / 2, (endX - startX + 1) * _waterSize, bottom - top), Color.SeaGreen * 0.5f);
+            _spriteBatch.Draw(_pixelTexture, new Rectangle(startX * _waterSize, top + _waterSize / 2, (endX - startX + 1) * _waterSize, bottom - top), Color.White);
 
             _spriteBatch.End();
         }
