@@ -1,31 +1,33 @@
-﻿using Floppy.Graphics;
-using Floppy.Input;
+﻿using Floppy.Input;
 using Floppy.Physics;
 using Floppy.Utilities;
 using LD46.Entities;
 using LD46.Physics;
 using Microsoft.Xna.Framework;
-using System;
 
 namespace LD46.Levels {
     public class Level {
         private readonly Entity _playerEntity;
+        private readonly Entity _torchEntity;
 
         public Level(InputBindings bindings) {
             TileMap = new TileMap(32, 32, PhysicsConstants.TileSize);
             PhysicsWorld = new PhysicsWorld();
             EntityWorld = new EntityWorld();
 
-            var random = new Random();
             for (int y = 0; y < TileMap.Height; y++) {
                 for (int x = 0; x < TileMap.Width; x++) {
-                    TileMap[x, y].CollisionType = (TileCollisionType)random.Next(3);
+                    if (x == 0 || x == TileMap.Width - 1 || y == TileMap.Height - 1) {
+                        TileMap[x, y].CollisionType = TileCollisionType.Solid;
+                    }
                 }
             }
 
             _playerEntity = EntityWorld.CreateEntity();
+            _torchEntity = EntityWorld.CreateEntity();
 
             SetupPlayer(bindings);
+            SetupTorch();
         }
 
         public TileMap TileMap { get; }
@@ -50,12 +52,22 @@ namespace LD46.Levels {
 
         private void SetupPlayer(InputBindings bindings) {
             Body playerBody = PhysicsWorld.CreateBody();
+            playerBody.Position = new Vector2(48f, 0f);
             playerBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
             playerBody.Gravity = new Vector2(0f, 500f);
 
             _playerEntity.BodyID = playerBody.ID;
 
             _playerEntity.Brain = new PlayerBrain(bindings);
+        }
+
+        private void SetupTorch() {
+            Body torchBody = PhysicsWorld.CreateBody();
+            torchBody.Position = new Vector2(64f, 0f);
+            torchBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
+            torchBody.Gravity = new Vector2(0f, 500f);
+
+            _torchEntity.BodyID = torchBody.ID;
         }
     }
 }
