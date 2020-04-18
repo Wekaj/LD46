@@ -11,12 +11,13 @@ namespace LD46.Views {
     public class EntitiesView {
         private readonly SpriteBatch _spriteBatch;
 
-        private readonly Texture2D _playerTexture;
+        private readonly Texture2D _playerTexture, _torchTexture;
 
         public EntitiesView(ContentManager content, SpriteBatch spriteBatch) {
             _spriteBatch = spriteBatch;
 
             _playerTexture = content.Load<Texture2D>("Textures/Player");
+            _torchTexture = content.Load<Texture2D>("Textures/Torch");
         }
 
         public void Draw(Level level, Camera2D camera) {
@@ -31,7 +32,18 @@ namespace LD46.Views {
 
         private void DrawEntity(Entity entity, Level level) {
             if (level.PhysicsWorld.TryGetBody(entity.BodyID, out Body? body)) {
-                _spriteBatch.Draw(_playerTexture, Vector2.Round(GraphicsConstants.PhysicsToView(body.Position)), Color.White);
+                Texture2D? texture = null;
+                switch (entity.Animations) {
+                    case EntityAnimations.Player:
+                        texture = _playerTexture;
+                        break;
+                    case EntityAnimations.Torch:
+                        texture = _torchTexture;
+                        break;
+                }
+
+                _spriteBatch.Draw(texture!, Vector2.Round(GraphicsConstants.PhysicsToView(body.Position + body.Bounds.Center)), null, 
+                    Color.White, entity.Rotation, texture!.Bounds.Center.ToVector2(), Vector2.One, SpriteEffects.None, 0f);
             }
         }
     }

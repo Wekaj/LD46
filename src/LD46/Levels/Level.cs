@@ -65,6 +65,10 @@ namespace LD46.Levels {
                     else {
                         body.Friction = body.Contact.Y > 0f ? entity.GroundFriction : entity.AirFriction;
                     }
+
+                    if (entity.CanRotate) {
+                        entity.Rotation += body.Velocity.X * deltaTime;
+                    }
                 }
             }
 
@@ -97,20 +101,25 @@ namespace LD46.Levels {
 
             _playerEntity.DangerSpeed = 18.8f;
             _playerEntity.DangerFriction = 0.6f;
+
+            _playerEntity.Animations = EntityAnimations.Player;
         }
 
         private void SetupTorch() {
             Body torchBody = PhysicsWorld.CreateBody();
             torchBody.Position = new Vector2(4, (TileMap.Height - 2) * PhysicsConstants.TileSize);
-            torchBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
-            torchBody.Gravity = new Vector2(0f, 300f);
-            torchBody.Friction = 1f;
+            torchBody.Bounds = new RectangleF(2f / 32f, 2f / 32f, 28f / 32f, 28f / 32f);
+            torchBody.Gravity = new Vector2(0f, 18.8f);
             torchBody.BounceFactor = 0.5f;
 
             _torchEntity.BodyID = torchBody.ID;
 
             _torchEntity.GroundFriction = 2f;
-            _torchEntity.AirFriction = 0.5f;
+            _torchEntity.AirFriction = 0.1f;
+
+            _torchEntity.Animations = EntityAnimations.Torch;
+
+            _torchEntity.CanRotate = true;
         }
     }
 }

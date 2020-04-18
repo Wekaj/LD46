@@ -116,12 +116,15 @@ namespace LD46.Entities {
                 return;
             }
 
-            float distance = Vector2.Distance(body.Position + body.Bounds.Center, torchBody.Position + torchBody.Bounds.Center);
+            Vector2 playerCenter = body.Position + body.Bounds.Center;
+            Vector2 torchCenter = torchBody.Position + torchBody.Bounds.Center;
+
+            float distance = Vector2.Distance(playerCenter, torchCenter);
 
             if (distance <= _kickDistance) {
                 torchBody.Velocity = torchBody.Velocity.SetY(0f);
 
-                var impulse = new Vector2((torchBody.Position.X - body.Position.X) * _kickHMultiplier, -_kickImpulse);
+                var impulse = new Vector2((torchCenter.X - playerCenter.X) * _kickHMultiplier, -_kickImpulse);
 
                 torchBody.Impulse += impulse;
             }
