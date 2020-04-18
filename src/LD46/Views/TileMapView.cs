@@ -40,33 +40,49 @@ namespace LD46.Views {
         private Rectangle GetSourceRectangle(int x, int y, TileMap tileMap) {
             TileCollisionType collisionType = tileMap[x, y].CollisionType;
 
-            int i = 0;
+            int tx = 0;
+            int ty = 0;
 
             switch (collisionType) {
                 case TileCollisionType.Platform: {
-                    i = 1;
+                    if (tileMap.IsSolid(x + 1, y, true)) {
+                        if (tileMap.IsSolid(x - 1, y, true)) {
+                            tx = 3;
+                        }
+                        else {
+                            tx = 2;
+                        }
+                    }
+                    else if (tileMap.IsSolid(x - 1, y, true)) {
+                        tx = 4;
+                    }
+                    else {
+                        tx = 1;
+                    }
                     break;
                 }
                 case TileCollisionType.Solid: {
+                    ty = 1;
+
                     if (tileMap.IsSolid(x + 1, y)) {
                         if (tileMap.IsSolid(x - 1, y)) {
-                            i = 4;
+                            tx = 3;
                         }
                         else {
-                            i = 3;
+                            tx = 2;
                         }
                     }
                     else if (tileMap.IsSolid(x - 1, y)) {
-                        i = 5;
+                        tx = 4;
                     }
                     else {
-                        i = 2;
+                        tx = 1;
                     }
                     break;
                 }
             }
 
-            return new Rectangle(i * 64, 0, 64, 64);
+            return new Rectangle(tx * 64, ty * 64, 64, 64);
         }
     }
 }
