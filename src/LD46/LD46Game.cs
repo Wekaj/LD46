@@ -1,4 +1,5 @@
-﻿using Floppy.Screens;
+﻿using Floppy.Graphics;
+using Floppy.Screens;
 using LD46.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +12,10 @@ namespace LD46 {
 
         private readonly ScreenManager _screens = new ScreenManager();
 
+        private RenderTargetStack? _renderTargetStack;
         private SpriteBatch? _spriteBatch;
+
+        private PixelScaler? _pixelScaler;
 
         public LD46Game() {
             _graphics = new GraphicsDeviceManager(this);
@@ -23,9 +27,13 @@ namespace LD46 {
         protected override void Initialize() {
             base.Initialize();
 
+            _renderTargetStack = new RenderTargetStack(GraphicsDevice);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Container container = CreateContainer();
+
+            _pixelScaler = container.GetInstance<PixelScaler>();
+            _pixelScaler.Scale = 3;
 
             InitializeScreens(container);
         }
@@ -46,7 +54,11 @@ namespace LD46 {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Transparent);
 
+            _pixelScaler!.Begin();
+
             _screens.CurrentScreen?.Draw(gameTime);
+
+            _pixelScaler!.End();
 
             base.Draw(gameTime);
         }
@@ -57,6 +69,7 @@ namespace LD46 {
             container.RegisterInstance(GraphicsDevice);
             container.RegisterInstance(Content);
             container.RegisterInstance(_screens);
+            container.RegisterInstance<IRenderTargetStack>(_renderTargetStack!);
             container.RegisterInstance(_spriteBatch!);
 
             return container;
