@@ -1,4 +1,5 @@
-﻿using Floppy.Input;
+﻿using Floppy.Graphics;
+using Floppy.Input;
 using Floppy.Physics;
 using Floppy.Utilities;
 using LD46.Entities;
@@ -8,6 +9,8 @@ using System;
 
 namespace LD46.Levels {
     public class Level {
+        private readonly Entity _playerEntity;
+
         public Level(InputBindings bindings) {
             TileMap = new TileMap(32, 32, PhysicsConstants.TileSize);
             PhysicsWorld = new PhysicsWorld();
@@ -20,12 +23,16 @@ namespace LD46.Levels {
                 }
             }
 
-            CreatePlayer(bindings);
+            _playerEntity = EntityWorld.CreateEntity();
+
+            SetupPlayer(bindings);
         }
 
         public TileMap TileMap { get; }
         public PhysicsWorld PhysicsWorld { get; }
         public EntityWorld EntityWorld { get; }
+
+        public Vector2 CameraCenter { get; private set; }
 
         public void Update(float deltaTime) {
             foreach (Entity entity in EntityWorld.Entities) {
@@ -35,18 +42,20 @@ namespace LD46.Levels {
             foreach (Body body in PhysicsWorld.Bodies) {
                 BodyPhysics.UpdateBody(body, deltaTime, TileMap);
             }
+
+            if (PhysicsWorld.TryGetBody(_playerEntity.BodyID, out Body? playerBody)) {
+                CameraCenter = playerBody.Position + playerBody.Bounds.Center;
+            }
         }
 
-        private void CreatePlayer(InputBindings bindings) {
-            Entity playerEntity = EntityWorld.CreateEntity();
-
+        private void SetupPlayer(InputBindings bindings) {
             Body playerBody = PhysicsWorld.CreateBody();
             playerBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
-            playerBody.Gravity = new Vector2(0f, 20f);
+            playerBody.Gravity = new Vector2(0f, 500f);
 
-            playerEntity.BodyID = playerBody.ID;
+            _playerEntity.BodyID = playerBody.ID;
 
-            playerEntity.Brain = new PlayerBrain(bindings);
+            _playerEntity.Brain = new PlayerBrain(bindings);
         }
     }
 }

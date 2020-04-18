@@ -1,5 +1,7 @@
-﻿using Floppy.Physics;
+﻿using Floppy.Graphics;
+using Floppy.Physics;
 using LD46.Graphics;
+using LD46.Levels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -16,12 +18,12 @@ namespace LD46.Views {
             _tilesTexture = content.Load<Texture2D>("Textures/Tiles");
         }
 
-        public void Draw(TileMap tileMap) {
-            _spriteBatch.Begin();
+        public void Draw(Level level, Camera2D camera) {
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
 
-            for (int y = 0; y < tileMap.Height; y++) {
-                for (int x = 0; x < tileMap.Width; x++) {
-                    DrawTile(x, y, tileMap);
+            for (int y = 0; y < level.TileMap.Height; y++) {
+                for (int x = 0; x < level.TileMap.Width; x++) {
+                    DrawTile(x, y, level.TileMap);
                 }
             }
 

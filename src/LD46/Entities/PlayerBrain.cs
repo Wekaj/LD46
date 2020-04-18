@@ -6,8 +6,8 @@ using Microsoft.Xna.Framework;
 
 namespace LD46.Entities {
     public class PlayerBrain : IBrain {
-        private const float _movementForce = 100f;
-        private const float _jumpImpulse = 100f;
+        private const float _movementForce = 200f;
+        private const float _jumpImpulse = 200f;
 
         private readonly InputBindings _bindings;
         

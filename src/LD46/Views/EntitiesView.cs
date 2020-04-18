@@ -1,4 +1,5 @@
-﻿using Floppy.Physics;
+﻿using Floppy.Graphics;
+using Floppy.Physics;
 using LD46.Entities;
 using LD46.Levels;
 using Microsoft.Xna.Framework;
@@ -17,8 +18,8 @@ namespace LD46.Views {
             _playerTexture = content.Load<Texture2D>("Textures/Player");
         }
 
-        public void Draw(Level level) {
-            _spriteBatch.Begin();
+        public void Draw(Level level, Camera2D camera) {
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
 
             foreach (Entity entity in level.EntityWorld.Entities) {
                 DrawEntity(entity, level);
@@ -29,7 +30,7 @@ namespace LD46.Views {
 
         private void DrawEntity(Entity entity, Level level) {
             if (level.PhysicsWorld.TryGetBody(entity.BodyID, out Body? body)) {
-                _spriteBatch.Draw(_playerTexture, body.Position, Color.White);
+                _spriteBatch.Draw(_playerTexture, Vector2.Floor(body.Position), Color.White);
             }
         }
     }
