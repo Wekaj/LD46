@@ -54,6 +54,8 @@ namespace LD46 {
         private Container CreateContainer() {
             var container = new Container();
 
+            container.RegisterInstance(GraphicsDevice);
+            container.RegisterInstance(Content);
             container.RegisterInstance(_screens);
             container.RegisterInstance(_spriteBatch!);
 

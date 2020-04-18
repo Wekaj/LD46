@@ -1,16 +1,15 @@
 ﻿using LD46.Levels;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace LD46.Views {
     public class LevelView {
-        private readonly SpriteBatch _spriteBatch;
+        private readonly TileMapView _tileMapView;
 
-        public LevelView(SpriteBatch spriteBatch) {
-            _spriteBatch = spriteBatch;
+        public LevelView(TileMapView tileMapView) {
+            _tileMapView = tileMapView;
         }
 
         public void Draw(Level level) {
-
+            _tileMapView.Draw(level.TileMap);
         }
     }
 }

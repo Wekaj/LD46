@@ -21,4 +21,14 @@
     <ProjectReference Include="..\Floppy\src\Floppy\Floppy.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Content\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MonoGameContentReference Include="..\..\res\Content.mgcb" Link="Content\Content.mgcb">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </MonoGameContentReference>
+  </ItemGroup>
+
 </Project>
