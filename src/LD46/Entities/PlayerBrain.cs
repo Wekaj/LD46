@@ -1,7 +1,6 @@
 ﻿using Floppy.Extensions;
 using Floppy.Input;
 using Floppy.Physics;
-using LD46.Graphics;
 using LD46.Input;
 using LD46.Levels;
 using LD46.Physics;
@@ -13,8 +12,8 @@ namespace LD46.Entities {
         private const float _movementSpeed = 150f;
         private const float _jumpImpulse = 300f;
         private const float _jumpTime = 0.1f;
-        private const float _kickImpulse = 500f;
-        private const float _kickHMultiplier = 10f;
+        private const float _kickImpulse = 300f;
+        private const float _kickHMultiplier = 16f;
         private const float _kickDistance = 24f;
 
         private readonly InputBindings _bindings;

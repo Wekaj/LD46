@@ -72,6 +72,7 @@ namespace LD46 {
         }
 
         private void SetupBindings() {
+            _bindings.Set(Bindings.Restart, new KeyboardBinding(Keys.R));
             _bindings.Set(Bindings.MoveRight, new KeyboardBinding(Keys.Right), new KeyboardBinding(Keys.D));
             _bindings.Set(Bindings.MoveLeft, new KeyboardBinding(Keys.Left), new KeyboardBinding(Keys.A));
             _bindings.Set(Bindings.Jump, new KeyboardBinding(Keys.Space));

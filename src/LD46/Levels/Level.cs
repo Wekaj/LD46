@@ -4,6 +4,7 @@ using Floppy.Utilities;
 using LD46.Entities;
 using LD46.Physics;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace LD46.Levels {
     public class Level {
@@ -11,14 +12,27 @@ namespace LD46.Levels {
         private readonly Entity _torchEntity;
 
         public Level(InputBindings bindings) {
-            TileMap = new TileMap(32, 32, PhysicsConstants.TileSize);
+            TileMap = new TileMap(32, 128, PhysicsConstants.TileSize);
             PhysicsWorld = new PhysicsWorld();
             EntityWorld = new EntityWorld();
 
+            var random = new Random();
             for (int y = 0; y < TileMap.Height; y++) {
+                int platforms = 0;
+                bool solid = false;
+
                 for (int x = 0; x < TileMap.Width; x++) {
+                    if (y % 3 == 0 && random.Next(10) == 0) {
+                        platforms = random.Next(2, 7);
+                        solid = random.Next(3) == 0;
+                    }
+
                     if (x == 0 || x == TileMap.Width - 1 || y == TileMap.Height - 1) {
                         TileMap[x, y].CollisionType = TileCollisionType.Solid;
+                    }
+                    else if (platforms > 0) {
+                        TileMap[x, y].CollisionType = solid ? TileCollisionType.Solid : TileCollisionType.Platform;
+                        platforms--;
                     }
                 }
             }
@@ -36,7 +50,7 @@ namespace LD46.Levels {
 
         public Vector2 CameraCenter { get; private set; }
 
-        public float WaterLevel { get; private set; }
+        public float WaterLevel { get; private set; } = -64f;
 
         public void Update(float deltaTime) {
             foreach (Entity entity in EntityWorld.Entities) {
@@ -58,16 +72,22 @@ namespace LD46.Levels {
                 BodyPhysics.UpdateBody(body, deltaTime, TileMap);
             }
 
+            float waterSpeedModifier = 1f;
+
             if (PhysicsWorld.TryGetBody(_playerEntity.BodyID, out Body? playerBody)) {
                 CameraCenter = playerBody.Position + playerBody.Bounds.Center;
+
+                float yDistance = Math.Abs(playerBody.Position.Y - (TileMap.Height * PhysicsConstants.TileSize - WaterLevel));
+
+                waterSpeedModifier *= Math.Max(yDistance * yDistance / 100000f, 1f);
             }
 
-            WaterLevel += 4f * deltaTime;
+            //WaterLevel += 32f * waterSpeedModifier * deltaTime;
         }
 
         private void SetupPlayer(InputBindings bindings) {
             Body playerBody = PhysicsWorld.CreateBody();
-            playerBody.Position = new Vector2(48f, 0f);
+            playerBody.Position = new Vector2(48f, (TileMap.Height - 2) * PhysicsConstants.TileSize);
             playerBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
             playerBody.Gravity = new Vector2(0f, 600f);
 
@@ -81,9 +101,9 @@ namespace LD46.Levels {
 
         private void SetupTorch() {
             Body torchBody = PhysicsWorld.CreateBody();
-            torchBody.Position = new Vector2(64f, 0f);
+            torchBody.Position = new Vector2(64f, (TileMap.Height - 2) * PhysicsConstants.TileSize);
             torchBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
-            torchBody.Gravity = new Vector2(0f, 500f);
+            torchBody.Gravity = new Vector2(0f, 300f);
             torchBody.Friction = 1f;
             torchBody.BounceFactor = 0.5f;
 
