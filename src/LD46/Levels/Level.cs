@@ -39,6 +39,17 @@ namespace LD46.Levels {
         public void Update(float deltaTime) {
             foreach (Entity entity in EntityWorld.Entities) {
                 entity.Brain?.Update(entity, this, deltaTime);
+
+                if (PhysicsWorld.TryGetBody(entity.BodyID, out Body? body)) {
+                    float speed = body.Velocity.Length();
+
+                    if (speed >= entity.DangerSpeed && body.Contact.Y > 0f) {
+                        body.Friction = entity.DangerFriction;
+                    }
+                    else {
+                        body.Friction = body.Contact.Y > 0f ? entity.GroundFriction : entity.AirFriction;
+                    }
+                }
             }
 
             foreach (Body body in PhysicsWorld.Bodies) {
@@ -54,11 +65,14 @@ namespace LD46.Levels {
             Body playerBody = PhysicsWorld.CreateBody();
             playerBody.Position = new Vector2(48f, 0f);
             playerBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
-            playerBody.Gravity = new Vector2(0f, 500f);
+            playerBody.Gravity = new Vector2(0f, 600f);
 
             _playerEntity.BodyID = playerBody.ID;
 
             _playerEntity.Brain = new PlayerBrain(bindings, _torchEntity.ID);
+
+            _playerEntity.DangerSpeed = 300f;
+            _playerEntity.DangerFriction = 10f;
         }
 
         private void SetupTorch() {
@@ -66,8 +80,12 @@ namespace LD46.Levels {
             torchBody.Position = new Vector2(64f, 0f);
             torchBody.Bounds = new RectangleF(2f, 2f, 12f, 14f);
             torchBody.Gravity = new Vector2(0f, 500f);
+            torchBody.Friction = 1f;
 
             _torchEntity.BodyID = torchBody.ID;
+
+            _torchEntity.GroundFriction = 2f;
+            _torchEntity.AirFriction = 0.5f;
         }
     }
 }

@@ -9,5 +9,11 @@
         public int BodyID { get; set; }
 
         public IBrain? Brain { get; set; }
+
+        public float GroundFriction { get; set; }
+        public float AirFriction { get; set; }
+
+        public float DangerSpeed { get; set; } = float.MaxValue;
+        public float DangerFriction { get; set; }
     }
 }
