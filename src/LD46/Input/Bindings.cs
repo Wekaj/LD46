@@ -3,5 +3,6 @@
         public static string MoveRight { get; } = "MoveRight";
         public static string MoveLeft { get; } = "MoveLeft";
         public static string Jump { get; } = "Jump";
+        public static string Kick { get; } = "Kick";
     }
 }

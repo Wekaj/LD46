@@ -58,7 +58,7 @@ namespace LD46.Levels {
 
             _playerEntity.BodyID = playerBody.ID;
 
-            _playerEntity.Brain = new PlayerBrain(bindings);
+            _playerEntity.Brain = new PlayerBrain(bindings, _torchEntity.ID);
         }
 
         private void SetupTorch() {
