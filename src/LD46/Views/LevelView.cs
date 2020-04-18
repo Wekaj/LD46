@@ -51,6 +51,7 @@ namespace LD46.Views {
             _camera.Position = Vector2.Round(GraphicsConstants.PhysicsToView(level.CameraCenter) - _graphicsDevice.Viewport.Bounds.Size.ToVector2() / 2f);
 
             _renderTargetStack.Push(_worldTarget);
+                _graphicsDevice.Clear(Color.Transparent);
                 _backgroundView.Draw(_camera);
                 _tileMapView.Draw(level, _camera);
                 _entitiesView.Draw(level, _camera);
@@ -58,10 +59,11 @@ namespace LD46.Views {
             _renderTargetStack.Pop();
 
             _renderTargetStack.Push(_waterTarget);
+                _graphicsDevice.Clear(Color.Transparent);
                 _waterView.DrawMask(level, _camera);
             _renderTargetStack.Pop();
 
-            //_waterEffect.Parameters["WaterMask"].SetValue(_waterTarget);
+            _waterEffect.Parameters["WaterMaskSampler+WaterMask"].SetValue(_waterTarget);
 
             _spriteBatch.Begin(effect: _waterEffect);
             _spriteBatch.Draw(_worldTarget, Vector2.Zero, Color.White);

@@ -8,10 +8,15 @@
 #endif
 
 Texture2D SpriteTexture;
-
-sampler2D SpriteTextureSampler = sampler_state
+SamplerState SpriteTextureSampler
 {
 	Texture = <SpriteTexture>;
+};
+
+Texture2D WaterMask;
+SamplerState WaterMaskSampler
+{
+	Texture = <WaterMask>;
 };
 
 struct VertexShaderOutput
@@ -23,7 +28,13 @@ struct VertexShaderOutput
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-	return tex2D(SpriteTextureSampler,input.TextureCoordinates) * input.Color;
+	float4 mask = WaterMask.Sample(WaterMaskSampler, input.TextureCoordinates);
+
+	float2 offset = float2(mask.a * 0.1, mask.a * 0.1);
+
+	float4 color = SpriteTexture.Sample(SpriteTextureSampler, input.TextureCoordinates + offset) * input.Color;
+
+	return color;
 }
 
 technique SpriteDrawing
