@@ -42,6 +42,8 @@ namespace LD46.Levels {
         public float WaterLevel { get; set; } = -4f;
         public float WaterTop => TileMap.Height * PhysicsConstants.TileSize - WaterLevel;
 
+        public float SlowMoTimer { get; set; } = 0f;
+
         public void Update(float deltaTime) {
             foreach (Entity entity in EntityWorld.Entities) {
                 entity.Brain?.Update(entity, this, deltaTime);
@@ -75,6 +77,10 @@ namespace LD46.Levels {
 
             foreach (Body body in PhysicsWorld.Bodies) {
                 BodyPhysics.UpdateBody(body, deltaTime, TileMap);
+            }
+
+            if (SlowMoTimer > 0f) {
+                SlowMoTimer -= deltaTime;
             }
         }
     }

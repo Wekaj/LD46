@@ -44,6 +44,10 @@ namespace LD46.Screens {
 
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            if (Level.SlowMoTimer > 0f) {
+                deltaTime /= 2f;
+            }
+
             Level.Update(deltaTime);
 
             float waterSpeedModifier = 1f;

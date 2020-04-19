@@ -148,12 +148,13 @@ namespace LD46.Entities {
 
                 torchBody.Impulse += impulse;
 
-                _jumpsLeft = 0;
+                _jumpsLeft = 1;
 
                 entity.Kick = true;
-            }
 
-            if (body.Contact.Y <= 0f && _graceTimer <= 0f) {
+                level.SlowMoTimer = 0.2f;
+            }
+            else if (body.Contact.Y <= 0f && _graceTimer <= 0f) {
                 _jumpsLeft = 0;
 
                 entity.Kick = true;
