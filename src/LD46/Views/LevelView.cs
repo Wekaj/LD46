@@ -13,7 +13,6 @@ namespace LD46.Views {
         private readonly IRenderTargetStack _renderTargetStack;
         private readonly BackgroundView _backgroundView;
         private readonly TileMapView _tileMapView;
-        private readonly EntitiesView _entitiesView;
         private readonly WaterView _waterView;
 
         private readonly Effect _waterEffect;
@@ -36,7 +35,7 @@ namespace LD46.Views {
             _renderTargetStack = renderTargetStack;
             _backgroundView = backgroundView;
             _tileMapView = tileMapView;
-            _entitiesView = entitiesView;
+            Entities = entitiesView;
             _waterView = waterView;
 
             _waterEffect = content.Load<Effect>("Effects/Water");
@@ -50,9 +49,12 @@ namespace LD46.Views {
             _waterEffect.Parameters["WaterColor"].SetValue(new Color(152, 163, 152).ToVector4());
         }
 
-        public void Update(float deltaTime) {
+        public EntitiesView Entities { get; }
+
+        public void Update(Level level, float deltaTime) {
             _shaderTimer += deltaTime;
 
+            Entities.Update(level, deltaTime);
             _waterView.Update(deltaTime);
         }
 
@@ -67,7 +69,7 @@ namespace LD46.Views {
                 _graphicsDevice.Clear(Color.Transparent);
                 _backgroundView.Draw(_camera);
                 _tileMapView.Draw(level, _camera);
-                _entitiesView.Draw(level, _camera);
+                Entities.Draw(level, _camera);
             _renderTargetStack.Pop();
 
             _renderTargetStack.Push(_waterTarget);

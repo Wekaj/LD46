@@ -6,45 +6,44 @@ using LD46.Levels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace LD46.Views {
     public class EntitiesView {
         private readonly SpriteBatch _spriteBatch;
 
-        private readonly Texture2D _playerTexture, _torchTexture;
+        private readonly EntityAnimations _animations;
 
-        public EntitiesView(ContentManager content, SpriteBatch spriteBatch) {
+        private readonly List<EntityView> _entityViews = new List<EntityView>();
+
+        private readonly Texture2D _defaultTexture;
+
+        public EntitiesView(ContentManager content, SpriteBatch spriteBatch, EntityAnimations animations) {
             _spriteBatch = spriteBatch;
 
-            _playerTexture = content.Load<Texture2D>("Textures/Player");
-            _torchTexture = content.Load<Texture2D>("Textures/Torch");
+            _animations = animations;
+
+            _defaultTexture = content.Load<Texture2D>("Textures/Torch");
+        }
+
+        public void Add(int entityID, EntityViewProfile profile) {
+            _entityViews.Add(new EntityView(entityID, profile, _defaultTexture, _animations));
+        }
+
+        public void Update(Level level, float deltaTime) {
+            foreach (EntityView entityView in _entityViews) {
+                entityView.Update(level, deltaTime);
+            }
         }
 
         public void Draw(Level level, Camera2D camera) {
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
 
-            foreach (Entity entity in level.EntityWorld.Entities) {
-                DrawEntity(entity, level);
+            foreach (EntityView entityView in _entityViews) {
+                entityView.Draw(level, _spriteBatch);
             }
 
             _spriteBatch.End();
-        }
-
-        private void DrawEntity(Entity entity, Level level) {
-            if (level.PhysicsWorld.TryGetBody(entity.BodyID, out Body? body)) {
-                Texture2D? texture = null;
-                switch (entity.Animations) {
-                    case EntityAnimations.Player:
-                        texture = _playerTexture;
-                        break;
-                    case EntityAnimations.Torch:
-                        texture = _torchTexture;
-                        break;
-                }
-
-                _spriteBatch.Draw(texture!, Vector2.Round(GraphicsConstants.PhysicsToView(body.Position + body.Bounds.Center)), null, 
-                    Color.White, entity.Rotation, texture!.Bounds.Center.ToVector2(), Vector2.One, SpriteEffects.None, 0f);
-            }
         }
     }
 }

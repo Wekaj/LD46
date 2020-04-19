@@ -82,7 +82,7 @@ namespace LD46.Entities {
                 _isJumping = true;
                 _jumpsLeft--;
 
-                KickTorch(body, level);
+                KickTorch(entity, body, level);
             }
 
             if (_bindings.IsPressed(Bindings.Jump) && _isJumping && _jumpTimer < _jumpTime) {
@@ -103,11 +103,11 @@ namespace LD46.Entities {
             }
 
             if (_bindings.JustPressed(Bindings.Kick)) {
-                KickTorch(body, level);
+                KickTorch(entity, body, level);
             }
         }
 
-        private void KickTorch(Body body, Level level) {
+        private void KickTorch(Entity entity, Body body, Level level) {
             if (!level.EntityWorld.TryGetEntity(_torchEntityID, out Entity? torchEntity)) {
                 return;
             }
@@ -128,6 +128,8 @@ namespace LD46.Entities {
 
                 torchBody.Impulse += impulse;
             }
+
+            entity.Kick = true;
         }
     }
 }
