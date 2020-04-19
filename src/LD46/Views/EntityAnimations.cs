@@ -12,9 +12,9 @@ namespace LD46.Views {
                 Origin = new Vector2(32f, 32f),
                 IsLooping = true
             }
-            .AddFrame(new Rectangle(0, 0, 64, 64), 0.1f)
-            .AddFrame(new Rectangle(64, 0, 64, 64), 0.1f)
-            .AddFrame(new Rectangle(128, 0, 64, 64), 0.1f)
+            .AddFrame(new Rectangle(0, 0, 64, 64), 0.15f)
+            .AddFrame(new Rectangle(64, 0, 64, 64), 0.15f)
+            .AddFrame(new Rectangle(128, 0, 64, 64), 0.15f)
             .AddFrame(new Rectangle(192, 0, 64, 64), 0.05f);
 
             PlayerIdleLeft = new SingleTextureAnimation(playerTexture) {
@@ -22,9 +22,9 @@ namespace LD46.Views {
                 IsLooping = true,
                 Effects = SpriteEffects.FlipHorizontally
             }
-            .AddFrame(new Rectangle(0, 0, 64, 64), 0.1f)
-            .AddFrame(new Rectangle(64, 0, 64, 64), 0.1f)
-            .AddFrame(new Rectangle(128, 0, 64, 64), 0.1f)
+            .AddFrame(new Rectangle(0, 0, 64, 64), 0.15f)
+            .AddFrame(new Rectangle(64, 0, 64, 64), 0.15f)
+            .AddFrame(new Rectangle(128, 0, 64, 64), 0.15f)
             .AddFrame(new Rectangle(192, 0, 64, 64), 0.05f);
 
             PlayerRunRight = new SingleTextureAnimation(playerTexture) {

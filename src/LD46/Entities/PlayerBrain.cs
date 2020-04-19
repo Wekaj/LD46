@@ -19,6 +19,8 @@ namespace LD46.Entities {
         private const float _kickHMultiplier = 16f;
         private const float _kickDistance = 1.5f;
 
+        private const float _gracePeriod = 0.1f;
+
         private readonly InputBindings _bindings;
 
         private readonly int _torchEntityID;
@@ -26,6 +28,8 @@ namespace LD46.Entities {
         private float _jumpTimer = 0f;
         private bool _isJumping = false;
         private int _jumpsLeft = _maxJumps;
+
+        private float _graceTimer;
 
         public PlayerBrain(InputBindings bindings, int torchEntityID) {
             _bindings = bindings;
@@ -57,6 +61,10 @@ namespace LD46.Entities {
 
             body.IgnoresPlatforms = _bindings.IsPressed(Bindings.Drop);
 
+            if (_graceTimer > 0f) {
+                _graceTimer -= deltaTime;
+            }
+
             if (speed < entity.DangerSpeed) {
                 if (_bindings.IsPressed(Bindings.MoveRight)) {
                     body.Velocity = body.Velocity.SetX(_movementSpeed * speedModifier);
@@ -72,6 +80,7 @@ namespace LD46.Entities {
 
             if (body.Contact.Y > 0f) {
                 _jumpsLeft = _maxJumps;
+                _graceTimer = _gracePeriod;
             }
 
             if (_bindings.JustPressed(Bindings.Jump) && _jumpsLeft > 0) {
@@ -127,9 +136,17 @@ namespace LD46.Entities {
                 var impulse = new Vector2((torchCenter.X - playerCenter.X) * _kickHMultiplier, -_kickImpulse);
 
                 torchBody.Impulse += impulse;
+
+                _jumpsLeft = 0;
+
+                entity.Kick = true;
             }
 
-            entity.Kick = true;
+            if (body.Contact.Y <= 0f && _graceTimer <= 0f) {
+                _jumpsLeft = 0;
+
+                entity.Kick = true;
+            }
         }
     }
 }
