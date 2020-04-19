@@ -25,5 +25,8 @@
         public bool IsPutOut { get; set; } = false;
 
         public bool HasLostAllHope { get; set; } = false;
+
+        public float KickTimer { get; set; } = 0f;
+        public float DashTimer { get; set; } = 0f;
     }
 }

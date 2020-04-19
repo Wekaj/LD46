@@ -5,6 +5,6 @@
         public static string MoveLeft { get; } = "MoveLeft";
         public static string Drop { get; } = "Drop";
         public static string Jump { get; } = "Jump";
-        public static string Kick { get; } = "Kick";
+        public static string Dash { get; } = "Dash";
     }
 }

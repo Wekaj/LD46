@@ -77,7 +77,7 @@ namespace LD46 {
             _bindings.Set(Bindings.MoveLeft, new KeyboardBinding(Keys.Left), new KeyboardBinding(Keys.A));
             _bindings.Set(Bindings.Drop, new KeyboardBinding(Keys.Down), new KeyboardBinding(Keys.S));
             _bindings.Set(Bindings.Jump, new KeyboardBinding(Keys.Space));
-            _bindings.Set(Bindings.Kick, new KeyboardBinding(Keys.LeftShift));
+            _bindings.Set(Bindings.Dash, new KeyboardBinding(Keys.LeftShift));
         }
 
         private Container CreateContainer() {

@@ -83,9 +83,6 @@ namespace LD46.Screens {
 
             _playerEntity.Brain = new PlayerBrain(bindings, _torchEntity.ID);
 
-            _playerEntity.DangerSpeed = 18.8f;
-            _playerEntity.DangerFriction = 0.6f;
-
             _levelView.Entities.Add(_playerEntity.ID, EntityViewProfile.Player);
         }
 
