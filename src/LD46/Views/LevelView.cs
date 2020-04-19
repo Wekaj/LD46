@@ -93,6 +93,8 @@ namespace LD46.Views {
 
         public Vector2 Start { get; set; }
 
+        public bool HideProgress { get; set; } = false;
+
         public bool HasFadedOut => _fadeOutOpacity >= 1f;
 
         public void ShowLoseScreen() {
@@ -149,6 +151,21 @@ namespace LD46.Views {
                 Background.Draw(_camera);
                 TileMap.Draw(level, _camera);
 
+                if (HideProgress) {
+                    _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: _camera.GetTransformMatrix());
+
+                    _spriteBatch.DrawString(_regularFont, "Press SPACE BAR to jump/kick.", new Vector2(256f, 2048f), Color.White);
+                    _spriteBatch.DrawString(_regularFont, "Use the ARROW KEYS to move.", new Vector2(60f, 1700f), Color.White);
+                    _spriteBatch.DrawString(_regularFont, "Tap DOWN to fall through platforms.", new Vector2(140f, 1520f), Color.White);
+                    _spriteBatch.DrawString(_regularFont, "Strike R to restart.", new Vector2(670f, 1800f), Color.White);
+                    _spriteBatch.DrawString(_regularFont, "Slap SHIFT while running to dash.", new Vector2(200f, 1190f), Color.White);
+                    _spriteBatch.DrawString(_regularFont, "You can chain kicks and dashes...", new Vector2(80f, 900f), Color.White);
+                    _spriteBatch.DrawString(_regularFont, "... if you hit your torch.", new Vector2(300f, 800f), Color.White);
+                    _spriteBatch.DrawString(_regularFont, "Psst... you can press P\nto skip this tutorial.", new Vector2(-350f, 2170f), Color.White);
+
+                    _spriteBatch.End();
+                }
+
                 _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: _camera.GetTransformMatrix());
 
                 int startX = (int)Math.Floor(_camera.Position.X / _finishTexture.Width);
@@ -201,11 +218,21 @@ namespace LD46.Views {
 
             _waterView.Draw(level, _camera);
 
+            if (HideProgress) {
+                _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: _camera.GetTransformMatrix());
+
+                //_spriteBatch.DrawString(_regularFont, "Press SPACE BAR to jump/kick.", new Vector2(256f, 2048f), Color.White);
+                //_spriteBatch.DrawString(_regularFont, "Use the ARROW KEYS to move.", new Vector2(60f, 1700f), Color.White);
+
+                _spriteBatch.End();
+            }
+
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             Vector2 progPos = new Vector2(32f, _graphicsDevice.Viewport.Height / 2f);
 
-            _spriteBatch.Draw(_progressTexture, progPos + new Vector2(-_progressTexture.Width / 2f, -_progressTexture.Height / 2f), Color.White);
+            if (!HideProgress)
+                _spriteBatch.Draw(_progressTexture, progPos + new Vector2(-_progressTexture.Width / 2f, -_progressTexture.Height / 2f), Color.White);
 
             Vector2 startView = GraphicsConstants.PhysicsToView(Start);
             float finishView = GraphicsConstants.PhysicsToView(level.FinishHeight);
@@ -227,6 +254,7 @@ namespace LD46.Views {
 
                     float tiy = Math.Clamp((torchPosition.Y - finishView) / (startView.Y - finishView), 0f, 1f);
 
+                    if (!HideProgress)
                     _spriteBatch.Draw(_torchIconTexture, 
                         progPos + new Vector2(-_torchIconTexture.Width / 2f, (tiy - 0.5f) * (_progressTexture.Height - 32f) - _torchIconTexture.Height / 2f), 
                         Color.White);
@@ -239,7 +267,8 @@ namespace LD46.Views {
 
                     float piy = Math.Clamp((playerPosition.Y - finishView) / (startView.Y - finishView), 0f, 1f);
 
-                    _spriteBatch.Draw(_playerIconTexture,
+                    if (!HideProgress)
+                        _spriteBatch.Draw(_playerIconTexture,
                         progPos + new Vector2(-_playerIconTexture.Width / 2f, (piy - 0.5f) * (_progressTexture.Height - 32f) - _playerIconTexture.Height / 2f),
                         Color.White);
                 }

@@ -18,6 +18,8 @@ namespace LD46.Views {
             _backgroundTilesTexture = content.Load<Texture2D>("Textures/BackgroundTiles");
         }
 
+        public int Texture { get; set; }
+
         public void Draw(Camera2D camera) {
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
 
@@ -42,7 +44,7 @@ namespace LD46.Views {
         }
 
         private Rectangle GetSourceRectangle() {
-            return new Rectangle(0, 0, 64, 64);
+            return new Rectangle(Texture * 64, 0, 64, 64);
         }
     }
 }

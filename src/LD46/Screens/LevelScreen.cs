@@ -43,13 +43,20 @@ namespace LD46.Screens {
             _torchEntity = Level.EntityWorld.CreateEntity();
             _playerEntity = Level.EntityWorld.CreateEntity();
 
-            SetupTorch();
-            SetupPlayer(_bindings);
+            SetupTorch(args.IsOpening ? Level.TileMap.Height - 2 : Level.TileMap.Height - 21);
+            SetupPlayer(_bindings, args.IsOpening ? Level.TileMap.Height - 3 :  Level.TileMap.Height - 22);
 
             _levelView.TorchEntityID = _torchEntity.ID;
             _levelView.PlayerEntityID = _playerEntity.ID;
 
             _levelView.TileMap.TextureOffset = args.TextureOffset;
+            _levelView.Background.Texture = args.BackgroundTile;
+
+            if (args.IsOpening) {
+                Level.WaterLevel = 0.5f;
+
+                _levelView.HideProgress = true;
+            }
         }
 
         public void Update(GameTime gameTime) {
@@ -113,9 +120,9 @@ namespace LD46.Screens {
             _levelView.Draw(Level);
         }
 
-        private void SetupPlayer(InputBindings bindings) {
+        private void SetupPlayer(InputBindings bindings, float y) {
             Body playerBody = Level.PhysicsWorld.CreateBody();
-            playerBody.Position = new Vector2(Level.TileMap.Width / 2f, Level.TileMap.Height - 22);
+            playerBody.Position = new Vector2(Level.TileMap.Width / 2f - 2f, y);
             playerBody.Bounds = new RectangleF(18f / 32f, 18f / 32f, 28f / 32f, 30f / 32f);
             playerBody.Gravity = new Vector2(0f, 37.5f);
 
@@ -128,9 +135,9 @@ namespace LD46.Screens {
             _levelView.Start = playerBody.Position;
         }
 
-        private void SetupTorch() {
+        private void SetupTorch(float y) {
             Body torchBody = Level.PhysicsWorld.CreateBody();
-            torchBody.Position = new Vector2(Level.TileMap.Width / 2f + 1f, Level.TileMap.Height - 21);
+            torchBody.Position = new Vector2(Level.TileMap.Width / 2f - 1f, y);
             torchBody.Bounds = new RectangleF(2f / 32f, 2f / 32f, 28f / 32f, 28f / 32f);
             torchBody.Gravity = new Vector2(0f, 18.8f);
             torchBody.BounceFactor = 0.5f;

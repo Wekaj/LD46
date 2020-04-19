@@ -6,8 +6,10 @@
         public int MaxPlatformWidth { get; set; } = 7;
         public LevelSettings? NextLevel { get; set; }
         public int TextureOffset { get; set; }
+        public int BackgroundTile { get; set; } = 0;
         public float WaterSpeed { get; set; } = 1f;
         public bool HasWind { get; set; } = false;
         public bool HasGrates { get; set; } = false;
+        public bool IsOpening { get; set; } = false;
     }
 }

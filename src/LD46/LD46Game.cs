@@ -78,7 +78,7 @@ namespace LD46 {
             _bindings.Set(Bindings.MoveLeft, new KeyboardBinding(Keys.Left), new KeyboardBinding(Keys.A));
             _bindings.Set(Bindings.Drop, new KeyboardBinding(Keys.Down), new KeyboardBinding(Keys.S));
             _bindings.Set(Bindings.Jump, new KeyboardBinding(Keys.Space));
-            _bindings.Set(Bindings.Dash, new KeyboardBinding(Keys.LeftShift));
+            _bindings.Set(Bindings.Dash, new KeyboardBinding(Keys.LeftShift), new KeyboardBinding(Keys.RightShift));
         }
 
         private Container CreateContainer() {
@@ -97,14 +97,24 @@ namespace LD46 {
         private void InitializeScreens(Container container) {
             _screens.AddScreenType(() => container.GetInstance<LevelScreen>());
 
+            LevelSettings level0Settings = new LevelSettings {
+                Height = 64,
+                TextureOffset = 0,
+                BackgroundTile = 1,
+                WaterSpeed = 0f,
+                IsOpening = true,
+            };
+
             LevelSettings level1Settings = new LevelSettings {
                 Height = 100,
                 SolidChance = 1f / 6f,
                 MinPlatformWidth = 2,
                 MaxPlatformWidth = 8,
                 TextureOffset = 0,
+                BackgroundTile = 1,
                 WaterSpeed = 1f,
             };
+            level0Settings.NextLevel = level1Settings;
 
             LevelSettings level2Settings = new LevelSettings {
                 Height = 128,
@@ -112,6 +122,7 @@ namespace LD46 {
                 MinPlatformWidth = 1,
                 MaxPlatformWidth = 7,
                 TextureOffset = 2,
+                BackgroundTile = 0,
                 WaterSpeed = 2f,
                 HasGrates = true,
             };
@@ -123,12 +134,13 @@ namespace LD46 {
                 MinPlatformWidth = 1,
                 MaxPlatformWidth = 5,
                 TextureOffset = 4,
+                BackgroundTile = 2,
                 WaterSpeed = 2.5f,
                 HasWind = true,
             };
             level2Settings.NextLevel = level3Settings;
 
-            _screens.TransitionTo<LevelScreen, LevelSettings>(level3Settings);
+            _screens.TransitionTo<LevelScreen, LevelSettings>(level0Settings);
         }
     }
 }
