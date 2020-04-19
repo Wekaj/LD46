@@ -4,7 +4,6 @@ using LD46.Levels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace LD46.Views {
     public class LevelView {
@@ -28,7 +27,8 @@ namespace LD46.Views {
 
         public LevelView(GraphicsDevice graphicsDevice, ContentManager content,
             SpriteBatch spriteBatch, IRenderTargetStack renderTargetStack, 
-            BackgroundView backgroundView, TileMapView tileMapView, EntitiesView entitiesView, WaterView waterView) {
+            BackgroundView backgroundView, TileMapView tileMapView, EntitiesView entitiesView, 
+            WaterView waterView, ParticlesView particlesView) {
 
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
@@ -36,6 +36,7 @@ namespace LD46.Views {
             _backgroundView = backgroundView;
             _tileMapView = tileMapView;
             Entities = entitiesView;
+            Particles = particlesView;
             _waterView = waterView;
 
             _waterEffect = content.Load<Effect>("Effects/Water");
@@ -47,15 +48,19 @@ namespace LD46.Views {
             _waterEffect.Parameters["WaterMaskSampler+WaterMask"].SetValue(_waterTarget);
             _waterEffect.Parameters["FlowMapSampler+FlowMap"].SetValue(_flowMapTexture);
             _waterEffect.Parameters["WaterColor"].SetValue(new Color(152, 163, 152).ToVector4());
+
+            Entities.Particles = Particles;
         }
 
         public EntitiesView Entities { get; }
+        public ParticlesView Particles { get; }
 
         public void Update(Level level, float deltaTime) {
             _shaderTimer += deltaTime;
 
             Entities.Update(level, deltaTime);
             _waterView.Update(deltaTime);
+            Particles.Update(deltaTime);
         }
 
         public void Draw(Level level) {
@@ -69,6 +74,7 @@ namespace LD46.Views {
                 _graphicsDevice.Clear(Color.Transparent);
                 _backgroundView.Draw(_camera);
                 _tileMapView.Draw(level, _camera);
+                Particles.Draw(_camera);
                 Entities.Draw(level, _camera);
             _renderTargetStack.Pop();
 

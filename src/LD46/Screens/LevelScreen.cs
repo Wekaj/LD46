@@ -54,7 +54,7 @@ namespace LD46.Screens {
                 waterSpeedModifier *= Math.Max(yDistance * yDistance / 100000f, 1f);
             }
 
-            Level.WaterLevel += 2f * waterSpeedModifier * deltaTime;
+            //Level.WaterLevel += 2f * waterSpeedModifier * deltaTime;
 
             _levelView.Update(Level, deltaTime);
         }
