@@ -42,6 +42,17 @@ namespace LD46.Entities {
                 return;
             }
 
+            if (level.EntityWorld.TryGetEntity(_torchEntityID, out Entity? torchEntity)) {
+                if (torchEntity.IsPutOut) {
+                    entity.HasLostAllHope = true;
+
+                    if (!_bindings.IsPressed(Bindings.MoveRight) && !_bindings.IsPressed(Bindings.MoveLeft)) {
+                        body.Velocity = body.Velocity.SetX(0f);
+                    }
+                    return;
+                }
+            }
+
             float speedModifier = 1f;
 
             float waterHeight = level.TileMap.Height * PhysicsConstants.TileSize - level.WaterLevel;

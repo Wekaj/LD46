@@ -67,7 +67,10 @@ namespace LD46.Views {
 
             switch (_profile) {
                 case EntityViewProfile.Player: {
-                    if (entity.Kick) {
+                    if (entity.HasLostAllHope) {
+                        PlayAnimation(_animations.PlayerDefeatedRight, _animations.PlayerDefeatedLeft);
+                    }
+                    else if (entity.Kick) {
                         ReplayAnimation(_animations.PlayerKickRight, _animations.PlayerKickLeft);
                         entity.Kick = false;
                     }
@@ -89,31 +92,26 @@ namespace LD46.Views {
                     break;
                 }
                 case EntityViewProfile.Torch: {
-                    PlayAnimation(_animations.Torch);
+                    if (entity.IsPutOut) {
+                        PlayAnimation(_animations.TorchOut);
+                    }
+                    else {
+                        PlayAnimation(_animations.Torch);
 
-                    _torchParticleTimer += deltaTime;
+                        _torchParticleTimer += deltaTime;
 
-                    var torchCenter = new Vector2(16f, 16f);
-                    var torchTip = new Vector2(14f, 6f);
+                        var torchCenter = new Vector2(16f, 16f);
+                        var torchTip = new Vector2(14f, 6f);
 
-                    var particlePosition = GraphicsConstants.PhysicsToView(body.Position + body.Bounds.Center) + Rotate(torchTip - torchCenter, entity.Rotation);
+                        var particlePosition = GraphicsConstants.PhysicsToView(body.Position + body.Bounds.Center) + Rotate(torchTip - torchCenter, entity.Rotation);
 
-                    //while (_torchParticleTimer >= _torchParticleRate) {
-                    //    _torchParticleTimer -= _torchParticleRate;
+                        Particles?.Add(_particleFactory.CreateBlackLineParticle(particlePosition, _previousTorchPosition));
+                        Particles?.Add(_particleFactory.CreateRedLineParticle(particlePosition, _previousTorchPosition));
+                        Particles?.Add(_particleFactory.CreateOrangeLineParticle(particlePosition, _previousTorchPosition));
+                        Particles?.Add(_particleFactory.CreateYellowLineParticle(particlePosition, _previousTorchPosition));
 
-                    //    var velocity = GraphicsConstants.PhysicsToView(body.Velocity) / 4f;
-
-                    //    Particles?.Add(_particleFactory.CreateRedFireParticle(particlePosition + _random.NextUnitVector() * (float)_random.NextDouble() * 4f, velocity));
-                    //    Particles?.Add(_particleFactory.CreateOrangeFireParticle(particlePosition + _random.NextUnitVector() * (float)_random.NextDouble() * 4f, velocity));
-                    //    Particles?.Add(_particleFactory.CreateYellowFireParticle(particlePosition + _random.NextUnitVector() * (float)_random.NextDouble() * 4f, velocity));
-                    //}
-
-                    Particles?.Add(_particleFactory.CreateBlackLineParticle(particlePosition, _previousTorchPosition));
-                    Particles?.Add(_particleFactory.CreateRedLineParticle(particlePosition, _previousTorchPosition));
-                    Particles?.Add(_particleFactory.CreateOrangeLineParticle(particlePosition, _previousTorchPosition));
-                    Particles?.Add(_particleFactory.CreateYellowLineParticle(particlePosition, _previousTorchPosition));
-
-                    _previousTorchPosition = particlePosition;
+                        _previousTorchPosition = particlePosition;
+                    }
                     break;
                 }
             }

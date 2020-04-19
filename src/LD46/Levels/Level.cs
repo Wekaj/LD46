@@ -40,6 +40,7 @@ namespace LD46.Levels {
         public Vector2 CameraCenter { get; set; }
 
         public float WaterLevel { get; set; } = -4f;
+        public float WaterTop => TileMap.Height * PhysicsConstants.TileSize - WaterLevel;
 
         public void Update(float deltaTime) {
             foreach (Entity entity in EntityWorld.Entities) {
@@ -57,6 +58,17 @@ namespace LD46.Levels {
 
                     if (entity.CanRotate) {
                         entity.Rotation += body.Velocity.X * deltaTime;
+                    }
+
+                    if (body.Position.Y >= WaterTop) {
+                        entity.WaterTimer += deltaTime;
+
+                        if (entity.WaterTimer >= 1f) {
+                            entity.IsPutOut = true;
+                        }
+                    }
+                    else {
+                        entity.WaterTimer = 0f;
                     }
                 }
             }

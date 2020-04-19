@@ -64,7 +64,7 @@ namespace LD46.Views {
             int endX = (int)Math.Floor((camera.Position.X + _spriteBatch.GraphicsDevice.Viewport.Width) / _waterSize);
 
             int top = level.TileMap.Height * GraphicsConstants.TileSize - (int)Math.Round(GraphicsConstants.PhysicsToView(level.WaterLevel));
-            int bottom = level.TileMap.Height * GraphicsConstants.TileSize + 100;
+            int bottom = level.TileMap.Height * GraphicsConstants.TileSize + 300;
 
             for (int x = startX; x <= endX; x++) {
                 _waterMaskSprite.Draw(_spriteBatch, new Vector2(x * _waterSize, top - _waterSize / 2f));

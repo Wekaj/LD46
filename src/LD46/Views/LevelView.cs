@@ -15,7 +15,8 @@ namespace LD46.Views {
         private readonly WaterView _waterView;
 
         private readonly Effect _waterEffect;
-        private readonly Texture2D _flowMapTexture;
+        private readonly Texture2D _flowMapTexture, _pixelTexture;
+        private readonly SpriteFont _regularFont;
 
         private RenderTarget2D _worldTarget, _waterTarget;
 
@@ -24,6 +25,9 @@ namespace LD46.Views {
         private int _extraSize = 128;
 
         private float _shaderTimer = 0f;
+
+        private bool _showLoseScreen = false;
+        private float _loseScreenOpacity = 0f;
 
         public LevelView(GraphicsDevice graphicsDevice, ContentManager content,
             SpriteBatch spriteBatch, IRenderTargetStack renderTargetStack, 
@@ -41,6 +45,8 @@ namespace LD46.Views {
 
             _waterEffect = content.Load<Effect>("Effects/Water");
             _flowMapTexture = content.Load<Texture2D>("Textures/FlowMap");
+            _pixelTexture = content.Load<Texture2D>("Textures/Pixel");
+            _regularFont = content.Load<SpriteFont>("Fonts/Regular");
 
             _worldTarget = CreateRenderTarget();
             _waterTarget = CreateRenderTarget();
@@ -55,12 +61,21 @@ namespace LD46.Views {
         public EntitiesView Entities { get; }
         public ParticlesView Particles { get; }
 
+        public void ShowLoseScreen() {
+            _showLoseScreen = true;
+        }
+
         public void Update(Level level, float deltaTime) {
             _shaderTimer += deltaTime;
 
             Entities.Update(level, deltaTime);
             _waterView.Update(deltaTime);
             Particles.Update(deltaTime);
+
+            if (_showLoseScreen) {
+                _loseScreenOpacity += 0.3f * deltaTime;
+                _loseScreenOpacity = MathHelper.Min(_loseScreenOpacity, 1f);
+            }
         }
 
         public void Draw(Level level) {
@@ -93,6 +108,12 @@ namespace LD46.Views {
             _spriteBatch.End();
 
             _waterView.Draw(level, _camera);
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            _spriteBatch.Draw(_pixelTexture, _graphicsDevice.Viewport.Bounds, Color.Black * 0.5f * _loseScreenOpacity);
+            _spriteBatch.DrawString(_regularFont, "Press R to restart.",
+                _graphicsDevice.Viewport.Bounds.Center.ToVector2() - _regularFont.MeasureString("Press R to restart.") / 2f, Color.White * _loseScreenOpacity);
+            _spriteBatch.End();
         }
 
         private bool RenderTargetsAreOutdated() {

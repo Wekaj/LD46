@@ -20,5 +20,10 @@
         public float Rotation { get; set; }
 
         public bool Kick { get; set; } = false;
+
+        public float WaterTimer { get; set; } = 0f;
+        public bool IsPutOut { get; set; } = false;
+
+        public bool HasLostAllHope { get; set; } = false;
     }
 }

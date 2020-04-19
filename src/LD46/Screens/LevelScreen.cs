@@ -26,17 +26,17 @@ namespace LD46.Screens {
 
             Level = level;
 
-            _playerEntity = Level.EntityWorld.CreateEntity();
             _torchEntity = Level.EntityWorld.CreateEntity();
+            _playerEntity = Level.EntityWorld.CreateEntity();
 
-            SetupPlayer(bindings);
             SetupTorch();
+            SetupPlayer(bindings);
         }
 
         public Level Level { get; }
 
         public void Update(GameTime gameTime) {
-            if (_bindings.IsPressed(Bindings.Restart)) {
+            if (_bindings.JustPressed(Bindings.Restart)) {
                 _screens.TransitionTo<LevelScreen>();
             }
 
@@ -54,7 +54,11 @@ namespace LD46.Screens {
                 waterSpeedModifier *= Math.Max(yDistance * yDistance / 100000f, 1f);
             }
 
-            //Level.WaterLevel += 2f * waterSpeedModifier * deltaTime;
+            Level.WaterLevel += 2f * waterSpeedModifier * deltaTime;
+
+            if (_playerEntity.HasLostAllHope) {
+                _levelView.ShowLoseScreen();
+            }
 
             _levelView.Update(Level, deltaTime);
         }
