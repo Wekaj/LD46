@@ -6,8 +6,8 @@ using System;
 
 namespace LD46.Levels {
     public class Level {
-        public Level() {
-            TileMap = new TileMap(32, 64, PhysicsConstants.TileSize);
+        public Level(LevelSettings settings) {
+            TileMap = new TileMap(32, settings.Height, PhysicsConstants.TileSize);
             PhysicsWorld = new PhysicsWorld();
             EntityWorld = new EntityWorld();
 
@@ -18,12 +18,15 @@ namespace LD46.Levels {
 
                 for (int x = 0; x < TileMap.Width; x++) {
                     if (y % 3 == 0 && random.Next(10) == 0) {
-                        platforms = random.Next(2, 7);
-                        solid = random.Next(6) == 0;
+                        platforms = random.Next(settings.MinPlatformWidth, settings.MaxPlatformWidth + 1);
+                        solid = random.NextDouble() <= settings.SolidChance;
                     }
 
-                    if (x == 0 || y == 0 || x == TileMap.Width - 1 || y == TileMap.Height - 1) {
+                    if (x == 0 || x == TileMap.Width - 1) {
                         TileMap[x, y].CollisionType = TileCollisionType.Solid;
+                    }
+                    else if (y == TileMap.Height - 20) {
+                        TileMap[x, y].CollisionType = TileCollisionType.Platform;
                     }
                     else if (platforms > 0) {
                         TileMap[x, y].CollisionType = solid ? TileCollisionType.Solid : TileCollisionType.Platform;
@@ -39,7 +42,9 @@ namespace LD46.Levels {
 
         public Vector2 CameraCenter { get; set; }
 
-        public float WaterLevel { get; set; } = -4f;
+        public float FinishHeight { get; set; } = 16.5f;
+
+        public float WaterLevel { get; set; } = 12f;
         public float WaterTop => TileMap.Height * PhysicsConstants.TileSize - WaterLevel;
 
         public float SlowMoTimer { get; set; } = 0f;

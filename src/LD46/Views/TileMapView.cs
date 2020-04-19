@@ -18,6 +18,8 @@ namespace LD46.Views {
             _tilesTexture = content.Load<Texture2D>("Textures/Tiles");
         }
 
+        public int TextureOffset { get; set; }
+
         public void Draw(Level level, Camera2D camera) {
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
 
@@ -82,7 +84,7 @@ namespace LD46.Views {
                 }
             }
 
-            return new Rectangle(tx * 64, ty * 64, 64, 64);
+            return new Rectangle(tx * 64, (ty + TextureOffset) * 64, 64, 64);
         }
     }
 }

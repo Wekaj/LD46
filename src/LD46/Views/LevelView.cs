@@ -8,18 +8,17 @@ using LD46.Levels;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace LD46.Views {
     public class LevelView {
         private readonly GraphicsDevice _graphicsDevice;
         private readonly SpriteBatch _spriteBatch;
         private readonly IRenderTargetStack _renderTargetStack;
-        private readonly BackgroundView _backgroundView;
-        private readonly TileMapView _tileMapView;
         private readonly WaterView _waterView;
 
         private readonly Effect _waterEffect;
-        private readonly Texture2D _flowMapTexture, _pixelTexture, _arrowTexture;
+        private readonly Texture2D _flowMapTexture, _pixelTexture, _arrowTexture, _finishTexture;
         private readonly SpriteFont _regularFont;
 
         private RenderTarget2D _worldTarget, _waterTarget;
@@ -33,6 +32,9 @@ namespace LD46.Views {
         private bool _showLoseScreen = false;
         private float _loseScreenOpacity = 0f;
 
+        private bool _fadeOut = false;
+        private float _fadeOutOpacity = 0f;
+
         private readonly Sprite _arrowSprite;
 
         public LevelView(GraphicsDevice graphicsDevice, ContentManager content,
@@ -43,8 +45,8 @@ namespace LD46.Views {
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
             _renderTargetStack = renderTargetStack;
-            _backgroundView = backgroundView;
-            _tileMapView = tileMapView;
+            Background = backgroundView;
+            TileMap = tileMapView;
             Entities = entitiesView;
             Particles = particlesView;
             _waterView = waterView;
@@ -53,6 +55,7 @@ namespace LD46.Views {
             _flowMapTexture = content.Load<Texture2D>("Textures/FlowMap");
             _pixelTexture = content.Load<Texture2D>("Textures/Pixel");
             _arrowTexture = content.Load<Texture2D>("Textures/TorchArrow");
+            _finishTexture = content.Load<Texture2D>("Textures/Finish");
             _regularFont = content.Load<SpriteFont>("Fonts/Regular");
 
             _worldTarget = CreateRenderTarget();
@@ -73,9 +76,17 @@ namespace LD46.Views {
 
         public EntitiesView Entities { get; }
         public ParticlesView Particles { get; }
+        public TileMapView TileMap { get; }
+        public BackgroundView Background { get; }
+
+        public bool HasFadedOut => _fadeOutOpacity >= 1f;
 
         public void ShowLoseScreen() {
             _showLoseScreen = true;
+        }
+
+        public void FadeOut() {
+            _fadeOut = true;
         }
 
         public void Update(Level level, float deltaTime) {
@@ -89,6 +100,11 @@ namespace LD46.Views {
                 _loseScreenOpacity += 0.3f * deltaTime;
                 _loseScreenOpacity = MathHelper.Min(_loseScreenOpacity, 1f);
             }
+
+            if (_fadeOut) {
+                _fadeOutOpacity += 1f * deltaTime;
+                _fadeOutOpacity = MathHelper.Min(_fadeOutOpacity, 1f);
+            }
         }
 
         public void Draw(Level level) {
@@ -99,16 +115,34 @@ namespace LD46.Views {
             _camera.Position = Vector2.Round(GraphicsConstants.PhysicsToView(level.CameraCenter) - _graphicsDevice.Viewport.Bounds.Size.ToVector2() / 2f);
 
             _renderTargetStack.Push(_worldTarget);
+            {
                 _graphicsDevice.Clear(Color.Transparent);
-                _backgroundView.Draw(_camera);
-                _tileMapView.Draw(level, _camera);
+                Background.Draw(_camera);
+                TileMap.Draw(level, _camera);
+
+                _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: _camera.GetTransformMatrix());
+
+                int startX = (int)Math.Floor(_camera.Position.X / _finishTexture.Width);
+                int endX = (int)Math.Floor((_camera.Position.X + _spriteBatch.GraphicsDevice.Viewport.Width) / _finishTexture.Width);
+
+                float y = GraphicsConstants.PhysicsToView(level.FinishHeight);
+
+                for (int x = startX; x <= endX; x++) {
+                    _spriteBatch.Draw(_finishTexture, new Vector2(x * _finishTexture.Width, y - _finishTexture.Height / 2f), Color.White);
+                }
+
+                _spriteBatch.End();
+
                 Particles.Draw(_camera);
                 Entities.Draw(level, _camera);
+            }
             _renderTargetStack.Pop();
 
             _renderTargetStack.Push(_waterTarget);
+            {
                 _graphicsDevice.Clear(Color.Transparent);
                 _waterView.DrawMask(level, _camera);
+            }
             _renderTargetStack.Pop();
 
             _waterEffect.Parameters["Time"].SetValue(_shaderTimer);
@@ -142,6 +176,8 @@ namespace LD46.Views {
 
             _spriteBatch.DrawString(_regularFont, "Press R to restart.",
                 _graphicsDevice.Viewport.Bounds.Center.ToVector2() - _regularFont.MeasureString("Press R to restart.") / 2f, Color.White * _loseScreenOpacity);
+
+            _spriteBatch.Draw(_pixelTexture, _graphicsDevice.Viewport.Bounds, Color.Black * _fadeOutOpacity);
 
             _spriteBatch.End();
         }
