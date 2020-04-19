@@ -106,6 +106,17 @@ namespace LD46.Views {
                     else if (tileMap.IsSolid(x - 1, y, ignoreGrates: true)) {
                         tx = 4;
                     }
+                    else if (tileMap.IsSolid(x, y + 1, ignoreGrates: true)) {
+                        if (tileMap.IsSolid(x, y - 1, ignoreGrates: true)) {
+                            tx = 6;
+                        }
+                        else {
+                            tx = 5;
+                        }
+                    }
+                    else if (tileMap.IsSolid(x, y - 1, ignoreGrates: true)) {
+                        tx = 7;
+                    }
                     else {
                         tx = 1;
                     }
@@ -116,17 +127,17 @@ namespace LD46.Views {
 
                     if (tileMap.IsSolid(x + 1, y, ignoreGrates: false)) {
                         if (tileMap.IsSolid(x - 1, y, ignoreGrates: false)) {
-                            tx = 7;
+                            tx = 10;
                         }
                         else {
-                            tx = 6;
+                            tx = 9;
                         }
                     }
                     else if (tileMap.IsSolid(x - 1, y, ignoreGrates: false)) {
-                        tx = 8;
+                        tx = 11;
                     }
                     else {
-                        tx = 5;
+                        tx = 8;
                     }
                     break;
                 }
