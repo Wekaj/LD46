@@ -31,6 +31,11 @@ float4 WaterColor;
 
 float2 Camera;
 
+float2 Position;
+float2 Dimensions;
+float2 Light1;
+float Radius;
+
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
@@ -49,7 +54,12 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	
 	float4 original = SpriteTexture.Sample(SpriteTextureSampler, input.TextureCoordinates + offset) * input.Color;
 
-	return original * (1.0 - mask * 0.75) + WaterColor * mask * 0.75;
+	float4 modified = original * (1.0 - mask * 0.5) + WaterColor * mask * 0.5;
+
+	float2 actualPos = Position + (input.TextureCoordinates + flow / 40.0) * Dimensions;
+	float light1Dist = distance(Light1, actualPos);
+
+	return modified * max(saturate(cos(min(light1Dist / Radius, 3.14 / 2.0))), 0.5);
 }
 
 technique SpriteDrawing

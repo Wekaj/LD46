@@ -44,6 +44,7 @@ namespace LD46.Screens {
             SetupPlayer(_bindings);
 
             _levelView.TorchEntityID = _torchEntity.ID;
+            _levelView.PlayerEntityID = _playerEntity.ID;
 
             _levelView.TileMap.TextureOffset = args.TextureOffset;
         }

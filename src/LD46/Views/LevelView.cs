@@ -37,6 +37,12 @@ namespace LD46.Views {
 
         private readonly Sprite _arrowSprite;
 
+        private readonly Random _random = new Random();
+
+        private float _lightRadius = 0f;
+        private float _flickerTimer = 0f;
+        private const float _flickerTime = 0.075f;
+
         public LevelView(GraphicsDevice graphicsDevice, ContentManager content,
             SpriteBatch spriteBatch, IRenderTargetStack renderTargetStack, 
             BackgroundView backgroundView, TileMapView tileMapView, EntitiesView entitiesView, 
@@ -73,6 +79,7 @@ namespace LD46.Views {
         }
 
         public int TorchEntityID { get; set; }
+        public int PlayerEntityID { get; set; }
 
         public EntitiesView Entities { get; }
         public ParticlesView Particles { get; }
@@ -104,6 +111,12 @@ namespace LD46.Views {
             if (_fadeOut) {
                 _fadeOutOpacity += 1f * deltaTime;
                 _fadeOutOpacity = MathHelper.Min(_fadeOutOpacity, 1f);
+            }
+
+            _flickerTimer += deltaTime;
+            if (_flickerTimer >= _flickerTime) {
+                _flickerTimer -= _flickerTime;
+                _lightRadius = 400f + (float)_random.NextDouble() * 20f;
             }
         }
 
@@ -149,6 +162,20 @@ namespace LD46.Views {
 
             Vector2 camera = _camera.Position / _graphicsDevice.Viewport.Bounds.Size.ToVector2();
             _waterEffect.Parameters["Camera"].SetValue(camera);
+
+            _waterEffect.Parameters["Position"].SetValue(_camera.Position);
+            _waterEffect.Parameters["Dimensions"].SetValue(_graphicsDevice.Viewport.Bounds.Size.ToVector2() + new Vector2(128f));
+
+            if (level.EntityWorld.TryGetEntity(TorchEntityID, out Entity? te)) {
+                if (!te.IsPutOut && level.PhysicsWorld.TryGetBody(te.BodyID, out Body? torchBody)) {
+                    _waterEffect.Parameters["Light1"].SetValue(GraphicsConstants.PhysicsToView(torchBody.Position + torchBody.Bounds.Center));
+                }
+                else {
+                    _waterEffect.Parameters["Light1"].SetValue(new Vector2(-1000f));
+                }
+            }
+
+            _waterEffect.Parameters["Radius"].SetValue(_lightRadius);
 
             _spriteBatch.Begin(effect: _waterEffect);
             _spriteBatch.Draw(_worldTarget, Vector2.Zero, Color.White);
