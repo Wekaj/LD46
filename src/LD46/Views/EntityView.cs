@@ -78,7 +78,7 @@ namespace LD46.Views {
                         entity.Kick = false;
                     }
                     else if ((_animation != _animations.PlayerKickRight && _animation != _animations.PlayerKickLeft)
-                        || _animationTimer >= 0.35f) {
+                        || _animationTimer >= 0.3f) {
 
                         if (body.Contact.Y > 0f) {
                             if (body.Velocity.X != 0f) {

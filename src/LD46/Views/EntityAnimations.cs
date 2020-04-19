@@ -71,7 +71,7 @@ namespace LD46.Views {
                 Origin = new Vector2(32f, 32f),
             }
             .AddFrame(new Rectangle(0, 192, 64, 64), 0.1f)
-            .AddFrame(new Rectangle(64, 192, 64, 64), 0.15f)
+            .AddFrame(new Rectangle(64, 192, 64, 64), 0.1f)
             .AddFrame(new Rectangle(128, 192, 64, 64), 0.05f)
             .AddFrame(new Rectangle(192, 192, 64, 64), 0.05f);
 
@@ -80,7 +80,7 @@ namespace LD46.Views {
                 Effects = SpriteEffects.FlipHorizontally
             }
             .AddFrame(new Rectangle(0, 192, 64, 64), 0.1f)
-            .AddFrame(new Rectangle(64, 192, 64, 64), 0.15f)
+            .AddFrame(new Rectangle(64, 192, 64, 64), 0.1f)
             .AddFrame(new Rectangle(128, 192, 64, 64), 0.05f)
             .AddFrame(new Rectangle(192, 192, 64, 64), 0.05f);
 

@@ -18,7 +18,8 @@ namespace LD46.Views {
         private readonly WaterView _waterView;
         private readonly ParticleFactory _particleFactory;
         private readonly Effect _waterEffect;
-        private readonly Texture2D _flowMapTexture, _pixelTexture, _arrowTexture, _finishTexture;
+        private readonly Texture2D _flowMapTexture, _pixelTexture, _arrowTexture, _finishTexture, _progressTexture,
+            _playerIconTexture, _torchIconTexture;
         private readonly SpriteFont _regularFont;
 
         private RenderTarget2D _worldTarget, _waterTarget;
@@ -63,6 +64,9 @@ namespace LD46.Views {
             _pixelTexture = content.Load<Texture2D>("Textures/Pixel");
             _arrowTexture = content.Load<Texture2D>("Textures/TorchArrow");
             _finishTexture = content.Load<Texture2D>("Textures/Finish");
+            _progressTexture = content.Load<Texture2D>("Textures/Progress");
+            _playerIconTexture = content.Load<Texture2D>("Textures/PlayerIcon");
+            _torchIconTexture = content.Load<Texture2D>("Textures/TorchIcon");
             _regularFont = content.Load<SpriteFont>("Fonts/Regular");
 
             _worldTarget = CreateRenderTarget();
@@ -86,6 +90,8 @@ namespace LD46.Views {
         public ParticlesView Particles { get; }
         public TileMapView TileMap { get; }
         public BackgroundView Background { get; }
+
+        public Vector2 Start { get; set; }
 
         public bool HasFadedOut => _fadeOutOpacity >= 1f;
 
@@ -197,17 +203,45 @@ namespace LD46.Views {
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
+            Vector2 progPos = new Vector2(32f, _graphicsDevice.Viewport.Height / 2f);
+
+            _spriteBatch.Draw(_progressTexture, progPos + new Vector2(-_progressTexture.Width / 2f, -_progressTexture.Height / 2f), Color.White);
+
+            Vector2 startView = GraphicsConstants.PhysicsToView(Start);
+            float finishView = GraphicsConstants.PhysicsToView(level.FinishHeight);
+
             if (level.EntityWorld.TryGetEntity(TorchEntityID, out Entity? torchEntity)) {
-                if (!torchEntity.IsPutOut && level.PhysicsWorld.TryGetBody(torchEntity.BodyID, out Body? torchBody)) {
+                if (level.PhysicsWorld.TryGetBody(torchEntity.BodyID, out Body? torchBody)) {
                     Vector2 torchPosition = GraphicsConstants.PhysicsToView(torchBody.Position + torchBody.Bounds.Center);
-                    Vector2 arrowPosition = torchPosition;
 
-                    arrowPosition.X = MathHelper.Clamp(arrowPosition.X, _camera.Position.X + 32f, _camera.Position.X + _graphicsDevice.Viewport.Width - 32f);
-                    arrowPosition.Y = MathHelper.Clamp(arrowPosition.Y, _camera.Position.Y + 32f, _camera.Position.Y + _graphicsDevice.Viewport.Height - 32f);
+                    if (!torchEntity.IsPutOut) {
+                        Vector2 arrowPosition = torchPosition;
 
-                    _arrowSprite.Rotation = (torchPosition - arrowPosition).GetAngle();
+                        arrowPosition.X = MathHelper.Clamp(arrowPosition.X, _camera.Position.X + 32f, _camera.Position.X + _graphicsDevice.Viewport.Width - 32f);
+                        arrowPosition.Y = MathHelper.Clamp(arrowPosition.Y, _camera.Position.Y + 32f, _camera.Position.Y + _graphicsDevice.Viewport.Height - 32f);
 
-                    _arrowSprite.Draw(_spriteBatch, arrowPosition - _camera.Position);
+                        _arrowSprite.Rotation = (torchPosition - arrowPosition).GetAngle();
+
+                        _arrowSprite.Draw(_spriteBatch, arrowPosition - _camera.Position);
+                    }
+
+                    float tiy = Math.Clamp((torchPosition.Y - finishView) / (startView.Y - finishView), 0f, 1f);
+
+                    _spriteBatch.Draw(_torchIconTexture, 
+                        progPos + new Vector2(-_torchIconTexture.Width / 2f, (tiy - 0.5f) * (_progressTexture.Height - 32f) - _torchIconTexture.Height / 2f), 
+                        Color.White);
+                }
+            }
+
+            if (level.EntityWorld.TryGetEntity(PlayerEntityID, out Entity? playerEntity)) {
+                if (level.PhysicsWorld.TryGetBody(playerEntity.BodyID, out Body? playerBody)) {
+                    Vector2 playerPosition = GraphicsConstants.PhysicsToView(playerBody.Position + playerBody.Bounds.Center);
+
+                    float piy = Math.Clamp((playerPosition.Y - finishView) / (startView.Y - finishView), 0f, 1f);
+
+                    _spriteBatch.Draw(_playerIconTexture,
+                        progPos + new Vector2(-_playerIconTexture.Width / 2f, (piy - 0.5f) * (_progressTexture.Height - 32f) - _playerIconTexture.Height / 2f),
+                        Color.White);
                 }
             }
 

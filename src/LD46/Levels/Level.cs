@@ -48,7 +48,7 @@ namespace LD46.Levels {
             }
             
             if (settings.HasWind) {
-                for (int i = 0; i < TileMap.Height / 20; i++) {
+                for (int i = 0; i < TileMap.Height / 20 - 1; i++) {
                     WindChannels.Add(3f + i * 20f + ((float)random.NextDouble() - 0.5f) * 4f);
                 }
             }

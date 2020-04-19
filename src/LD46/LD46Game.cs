@@ -98,7 +98,7 @@ namespace LD46 {
             _screens.AddScreenType(() => container.GetInstance<LevelScreen>());
 
             LevelSettings level1Settings = new LevelSettings {
-                Height = 128,
+                Height = 100,
                 SolidChance = 1f / 6f,
                 MinPlatformWidth = 2,
                 MaxPlatformWidth = 8,
@@ -107,7 +107,7 @@ namespace LD46 {
             };
 
             LevelSettings level2Settings = new LevelSettings {
-                Height = 160,
+                Height = 128,
                 SolidChance = 1f / 4f,
                 MinPlatformWidth = 1,
                 MaxPlatformWidth = 7,
@@ -118,17 +118,17 @@ namespace LD46 {
             level1Settings.NextLevel = level2Settings;
 
             LevelSettings level3Settings = new LevelSettings {
-                Height = 190,
+                Height = 128,
                 SolidChance = 1f / 3f,
                 MinPlatformWidth = 1,
                 MaxPlatformWidth = 5,
                 TextureOffset = 4,
-                WaterSpeed = 3f,
+                WaterSpeed = 2.5f,
                 HasWind = true,
             };
             level2Settings.NextLevel = level3Settings;
 
-            _screens.TransitionTo<LevelScreen, LevelSettings>(level2Settings);
+            _screens.TransitionTo<LevelScreen, LevelSettings>(level3Settings);
         }
     }
 }

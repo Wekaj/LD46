@@ -124,6 +124,8 @@ namespace LD46.Screens {
             _playerEntity.Brain = new PlayerBrain(bindings, _torchEntity.ID, _soundEffects);
 
             _levelView.Entities.Add(_playerEntity.ID, EntityViewProfile.Player);
+
+            _levelView.Start = playerBody.Position;
         }
 
         private void SetupTorch() {
