@@ -58,14 +58,18 @@ namespace LD46.Views {
                 Origin = new Vector2(32f, 32f),
                 IsLooping = true
             }
-            .AddFrame(new Rectangle(0, 128, 64, 64), 0.1f);
+            .AddFrame(new Rectangle(0, 128, 64, 64), 0.1f)
+            .AddFrame(new Rectangle(64, 128, 64, 64), 0.1f)
+            .AddFrame(new Rectangle(128, 128, 64, 64), 0.1f);
 
             PlayerFallLeft = new SingleTextureAnimation(playerTexture) {
                 Origin = new Vector2(32f, 32f),
                 IsLooping = true,
                 Effects = SpriteEffects.FlipHorizontally
             }
-            .AddFrame(new Rectangle(0, 128, 64, 64), 0.1f);
+            .AddFrame(new Rectangle(0, 128, 64, 64), 0.1f)
+            .AddFrame(new Rectangle(64, 128, 64, 64), 0.1f)
+            .AddFrame(new Rectangle(128, 128, 64, 64), 0.1f);
 
             PlayerKickRight = new SingleTextureAnimation(playerTexture) {
                 Origin = new Vector2(32f, 32f),
