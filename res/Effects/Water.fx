@@ -43,7 +43,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	float2 flowPos = input.TextureCoordinates + Camera;
 
 	float mask = ceil(WaterMask.Sample(WaterMaskSampler, input.TextureCoordinates).a);
-	float2 flow = FlowMap.Sample(FlowMapSampler, flowPos * 2.0 + float2(0.2, 0.2) * Time).xy + float2(-0.5, -0.5); 
+	float2 flow = FlowMap.Sample(FlowMapSampler, flowPos + float2(0.2, 0.2) * Time).xy + float2(-0.5, -0.5); 
 
 	float2 offset = flow * mask / 40.0;
 	
