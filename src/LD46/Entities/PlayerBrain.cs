@@ -19,6 +19,7 @@ namespace LD46.Entities {
         private const float _dashTime = 0.1f;
         private const float _dashHImpulse = 7.5f;
         private const float _dashImpulse = 18.8f;
+        private const float _dashCooldown = 0.25f;
 
         private const float _kickImpulse = 18.8f;
         private const float _kickHMultiplier = 12f;
@@ -41,6 +42,8 @@ namespace LD46.Entities {
 
         private bool _hasBumped = false;
         private bool _hasKicked = false;
+
+        private float _dashCooldownTimer = 0f;
 
         public PlayerBrain(InputBindings bindings, int torchEntityID) {
             _bindings = bindings;
@@ -103,10 +106,14 @@ namespace LD46.Entities {
                 _graceTimer = _gracePeriod;
             }
 
+            if (_dashCooldownTimer > 0f) {
+                _dashCooldownTimer -= deltaTime;
+            }
+
             if (entity.DashTimer <= 0f) {
                 _hasBumped = false;
 
-                if (_bindings.JustPressed(Bindings.Dash) && _jumpsLeft > 0) {
+                if (_bindings.JustPressed(Bindings.Dash) && _jumpsLeft > 0 && _dashCooldownTimer <= 0f) {
                     _dashDir = new Vector2();
                     if (_bindings.IsPressed(Bindings.MoveRight)) {
                         _dashDir.X++;
@@ -119,6 +126,8 @@ namespace LD46.Entities {
                         entity.DashTimer = _dashTime;
 
                         _jumpsLeft--;
+
+                        _dashCooldownTimer = _dashCooldown;
                     }
                 }
             }
