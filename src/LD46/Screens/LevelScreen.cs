@@ -31,6 +31,8 @@ namespace LD46.Screens {
 
             SetupTorch();
             SetupPlayer(bindings);
+
+            _levelView.TorchEntityID = _torchEntity.ID;
         }
 
         public Level Level { get; }
@@ -54,7 +56,7 @@ namespace LD46.Screens {
                 waterSpeedModifier *= Math.Max(yDistance * yDistance / 100000f, 1f);
             }
 
-            Level.WaterLevel += 2f * waterSpeedModifier * deltaTime;
+            Level.WaterLevel += 1f * waterSpeedModifier * deltaTime;
 
             if (_playerEntity.HasLostAllHope) {
                 _levelView.ShowLoseScreen();

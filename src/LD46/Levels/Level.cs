@@ -7,7 +7,7 @@ using System;
 namespace LD46.Levels {
     public class Level {
         public Level() {
-            TileMap = new TileMap(32, 128, PhysicsConstants.TileSize);
+            TileMap = new TileMap(32, 64, PhysicsConstants.TileSize);
             PhysicsWorld = new PhysicsWorld();
             EntityWorld = new EntityWorld();
 
@@ -19,10 +19,10 @@ namespace LD46.Levels {
                 for (int x = 0; x < TileMap.Width; x++) {
                     if (y % 3 == 0 && random.Next(10) == 0) {
                         platforms = random.Next(2, 7);
-                        solid = random.Next(3) == 0;
+                        solid = random.Next(6) == 0;
                     }
 
-                    if (x == 0 || x == TileMap.Width - 1 || y == TileMap.Height - 1) {
+                    if (x == 0 || y == 0 || x == TileMap.Width - 1 || y == TileMap.Height - 1) {
                         TileMap[x, y].CollisionType = TileCollisionType.Solid;
                     }
                     else if (platforms > 0) {

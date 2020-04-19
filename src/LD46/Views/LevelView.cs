@@ -1,4 +1,8 @@
-﻿using Floppy.Graphics;
+﻿using Floppy.Extensions;
+using Floppy.Graphics;
+using Floppy.Physics;
+using Floppy.Utilities;
+using LD46.Entities;
 using LD46.Graphics;
 using LD46.Levels;
 using Microsoft.Xna.Framework;
@@ -15,7 +19,7 @@ namespace LD46.Views {
         private readonly WaterView _waterView;
 
         private readonly Effect _waterEffect;
-        private readonly Texture2D _flowMapTexture, _pixelTexture;
+        private readonly Texture2D _flowMapTexture, _pixelTexture, _arrowTexture;
         private readonly SpriteFont _regularFont;
 
         private RenderTarget2D _worldTarget, _waterTarget;
@@ -28,6 +32,8 @@ namespace LD46.Views {
 
         private bool _showLoseScreen = false;
         private float _loseScreenOpacity = 0f;
+
+        private readonly Sprite _arrowSprite;
 
         public LevelView(GraphicsDevice graphicsDevice, ContentManager content,
             SpriteBatch spriteBatch, IRenderTargetStack renderTargetStack, 
@@ -46,6 +52,7 @@ namespace LD46.Views {
             _waterEffect = content.Load<Effect>("Effects/Water");
             _flowMapTexture = content.Load<Texture2D>("Textures/FlowMap");
             _pixelTexture = content.Load<Texture2D>("Textures/Pixel");
+            _arrowTexture = content.Load<Texture2D>("Textures/TorchArrow");
             _regularFont = content.Load<SpriteFont>("Fonts/Regular");
 
             _worldTarget = CreateRenderTarget();
@@ -55,8 +62,14 @@ namespace LD46.Views {
             _waterEffect.Parameters["FlowMapSampler+FlowMap"].SetValue(_flowMapTexture);
             _waterEffect.Parameters["WaterColor"].SetValue(new Color(152, 163, 152).ToVector4());
 
+            _arrowSprite = new Sprite(_arrowTexture) {
+                Origin = _arrowTexture.Bounds.Center.ToVector2()
+            };
+
             Entities.Particles = Particles;
         }
+
+        public int TorchEntityID { get; set; }
 
         public EntitiesView Entities { get; }
         public ParticlesView Particles { get; }
@@ -110,9 +123,26 @@ namespace LD46.Views {
             _waterView.Draw(level, _camera);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            if (level.EntityWorld.TryGetEntity(TorchEntityID, out Entity? torchEntity)) {
+                if (!torchEntity.IsPutOut && level.PhysicsWorld.TryGetBody(torchEntity.BodyID, out Body? torchBody)) {
+                    Vector2 torchPosition = GraphicsConstants.PhysicsToView(torchBody.Position + torchBody.Bounds.Center);
+                    Vector2 arrowPosition = torchPosition;
+
+                    arrowPosition.X = MathHelper.Clamp(arrowPosition.X, _camera.Position.X + 32f, _camera.Position.X + _graphicsDevice.Viewport.Width - 32f);
+                    arrowPosition.Y = MathHelper.Clamp(arrowPosition.Y, _camera.Position.Y + 32f, _camera.Position.Y + _graphicsDevice.Viewport.Height - 32f);
+
+                    _arrowSprite.Rotation = (torchPosition - arrowPosition).GetAngle();
+
+                    _arrowSprite.Draw(_spriteBatch, arrowPosition - _camera.Position);
+                }
+            }
+
             _spriteBatch.Draw(_pixelTexture, _graphicsDevice.Viewport.Bounds, Color.Black * 0.5f * _loseScreenOpacity);
+
             _spriteBatch.DrawString(_regularFont, "Press R to restart.",
                 _graphicsDevice.Viewport.Bounds.Center.ToVector2() - _regularFont.MeasureString("Press R to restart.") / 2f, Color.White * _loseScreenOpacity);
+
             _spriteBatch.End();
         }
 
