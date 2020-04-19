@@ -3,6 +3,7 @@ using LD46.Entities;
 using LD46.Physics;
 using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 
 namespace LD46.Levels {
     public class Level {
@@ -34,6 +35,12 @@ namespace LD46.Levels {
                     }
                 }
             }
+            
+            if (settings.HasWind) {
+                for (int i = 0; i < TileMap.Height / 20; i++) {
+                    WindChannels.Add(3f + i * 20f + ((float)random.NextDouble() - 0.5f) * 4f);
+                }
+            }
         }
 
         public TileMap TileMap { get; }
@@ -48,6 +55,8 @@ namespace LD46.Levels {
         public float WaterTop => TileMap.Height * PhysicsConstants.TileSize - WaterLevel;
 
         public float SlowMoTimer { get; set; } = 0f;
+
+        public List<float> WindChannels { get; set; } = new List<float>();
 
         public void Update(float deltaTime) {
             foreach (Entity entity in EntityWorld.Entities) {
@@ -76,6 +85,16 @@ namespace LD46.Levels {
                     }
                     else {
                         entity.WaterTimer = 0f;
+                    }
+
+                    if (entity.IsBlowable) {
+                        for (int i = 0; i < WindChannels.Count; i++) {
+                            float channel = WindChannels[i];
+
+                            if (body.Position.Y + body.Bounds.Center.Y >= channel - 4f && body.Position.Y + body.Bounds.Center.Y <= channel + 4f) {
+                                body.Force += new Vector2(i % 2 == 0 ? 1f : -1f, 0f) * 20f;
+                            }
+                        }
                     }
                 }
             }

@@ -28,5 +28,7 @@
 
         public float KickTimer { get; set; } = 0f;
         public float DashTimer { get; set; } = 0f;
+
+        public bool IsBlowable { get; set; } = false;
     }
 }

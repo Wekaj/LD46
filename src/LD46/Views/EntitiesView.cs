@@ -1,4 +1,5 @@
 ﻿using Floppy.Graphics;
+using LD46.Audio;
 using LD46.Levels;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,6 +11,7 @@ namespace LD46.Views {
 
         private readonly EntityAnimations _animations;
         private readonly ParticleFactory _particleFactory;
+        private readonly SoundEffects _soundEffects;
 
         private readonly List<EntityView> _entityViews = new List<EntityView>();
 
@@ -17,12 +19,14 @@ namespace LD46.Views {
 
         private ParticlesView? _particles;
 
-        public EntitiesView(ContentManager content, SpriteBatch spriteBatch, EntityAnimations animations, ParticleFactory particleFactory) {
+        public EntitiesView(ContentManager content, SpriteBatch spriteBatch, 
+            EntityAnimations animations, ParticleFactory particleFactory, SoundEffects soundEffects) {
+
             _spriteBatch = spriteBatch;
 
             _animations = animations;
             _particleFactory = particleFactory;
-
+            _soundEffects = soundEffects;
             _defaultTexture = content.Load<Texture2D>("Textures/Torch");
         }
 
@@ -38,7 +42,7 @@ namespace LD46.Views {
         }
 
         public void Add(int entityID, EntityViewProfile profile) {
-            _entityViews.Add(new EntityView(entityID, profile, _defaultTexture, _animations, _particleFactory) { Particles = _particles });
+            _entityViews.Add(new EntityView(entityID, profile, _defaultTexture, _animations, _particleFactory, _soundEffects) { Particles = _particles });
         }
 
         public void Update(Level level, float deltaTime) {

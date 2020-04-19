@@ -2,6 +2,7 @@
 using Floppy.Physics;
 using Floppy.Screens;
 using Floppy.Utilities;
+using LD46.Audio;
 using LD46.Entities;
 using LD46.Input;
 using LD46.Levels;
@@ -14,6 +15,7 @@ namespace LD46.Screens {
     public class LevelScreen : IScreen<LevelSettings> {
         private readonly ScreenManager _screens;
         private readonly InputBindings _bindings;
+        private readonly SoundEffects _soundEffects;
         private readonly LevelView _levelView;
 
         private LevelSettings _settings;
@@ -24,9 +26,10 @@ namespace LD46.Screens {
         private bool _hasWon = false;
         private float _winTimer = 0f;
 
-        public LevelScreen(ScreenManager screens, InputBindings bindings, LevelView levelView) {
+        public LevelScreen(ScreenManager screens, InputBindings bindings, SoundEffects soundEffects, LevelView levelView) {
             _screens = screens;
             _bindings = bindings;
+            _soundEffects = soundEffects;
             _levelView = levelView;
         }
 
@@ -118,7 +121,7 @@ namespace LD46.Screens {
 
             _playerEntity.BodyID = playerBody.ID;
 
-            _playerEntity.Brain = new PlayerBrain(bindings, _torchEntity.ID);
+            _playerEntity.Brain = new PlayerBrain(bindings, _torchEntity.ID, _soundEffects);
 
             _levelView.Entities.Add(_playerEntity.ID, EntityViewProfile.Player);
         }
@@ -136,6 +139,8 @@ namespace LD46.Screens {
             _torchEntity.AirFriction = 0.1f;
 
             _torchEntity.CanRotate = true;
+
+            _torchEntity.IsBlowable = true;
 
             _levelView.Entities.Add(_torchEntity.ID, EntityViewProfile.Torch);
         }

@@ -1,6 +1,7 @@
 ﻿using Floppy.Extensions;
 using Floppy.Graphics;
 using Floppy.Physics;
+using LD46.Audio;
 using LD46.Entities;
 using LD46.Graphics;
 using LD46.Levels;
@@ -22,6 +23,7 @@ namespace LD46.Views {
 
         private readonly EntityAnimations _animations;
         private readonly ParticleFactory _particleFactory;
+        private readonly SoundEffects _soundEffects;
 
         private IAnimation? _animation;
         private float _animationTimer = 0f;
@@ -36,7 +38,7 @@ namespace LD46.Views {
         private Vector2 _previousTorchPosition;
 
         public EntityView(int entityID, EntityViewProfile profile, Texture2D texture, 
-            EntityAnimations animations, ParticleFactory particleFactory) {
+            EntityAnimations animations, ParticleFactory particleFactory, SoundEffects soundEffects) {
 
             _entityID = entityID;
             _profile = profile;
@@ -45,6 +47,7 @@ namespace LD46.Views {
 
             _animations = animations;
             _particleFactory = particleFactory;
+            _soundEffects = soundEffects;
         }
 
         public ParticlesView? Particles { get; set; }
@@ -92,6 +95,12 @@ namespace LD46.Views {
                     break;
                 }
                 case EntityViewProfile.Torch: {
+                    if (body.Contact != Vector2.Zero && body.Velocity.Length() > 3f) {
+                        _soundEffects
+                            .GetRandom(_soundEffects.Thud1, _soundEffects.Thud2, _soundEffects.Thud3)
+                            .Play();
+                    }
+
                     if (entity.IsPutOut) {
                         PlayAnimation(_animations.TorchOut);
                     }

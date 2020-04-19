@@ -1,6 +1,7 @@
 ﻿using Floppy.Extensions;
 using Floppy.Input;
 using Floppy.Physics;
+using LD46.Audio;
 using LD46.Input;
 using LD46.Levels;
 using LD46.Physics;
@@ -31,6 +32,7 @@ namespace LD46.Entities {
         private readonly InputBindings _bindings;
 
         private readonly int _torchEntityID;
+        private readonly SoundEffects _soundEffects;
 
         private float _jumpTimer = 0f;
         private bool _isJumping = false;
@@ -45,10 +47,11 @@ namespace LD46.Entities {
 
         private float _dashCooldownTimer = 0f;
 
-        public PlayerBrain(InputBindings bindings, int torchEntityID) {
+        public PlayerBrain(InputBindings bindings, int torchEntityID, SoundEffects soundEffects) {
             _bindings = bindings;
 
             _torchEntityID = torchEntityID;
+            _soundEffects = soundEffects;
         }
 
         public void Update(Entity entity, Level level, float deltaTime) {
@@ -241,6 +244,10 @@ namespace LD46.Entities {
                 _jumpsLeft = 1;
 
                 level.SlowMoTimer = 0.2f;
+
+                _soundEffects
+                    .GetRandom(_soundEffects.Click1, _soundEffects.Click2, _soundEffects.Click3)
+                    .Play();
             }
         }
 
@@ -274,6 +281,10 @@ namespace LD46.Entities {
                 _jumpsLeft = 1;
 
                 level.SlowMoTimer = 0.15f;
+
+                _soundEffects
+                    .GetRandom(_soundEffects.Click1, _soundEffects.Click2, _soundEffects.Click3)
+                    .Play();
             }
         }
     }

@@ -16,7 +16,7 @@ namespace LD46.Views {
         private readonly SpriteBatch _spriteBatch;
         private readonly IRenderTargetStack _renderTargetStack;
         private readonly WaterView _waterView;
-
+        private readonly ParticleFactory _particleFactory;
         private readonly Effect _waterEffect;
         private readonly Texture2D _flowMapTexture, _pixelTexture, _arrowTexture, _finishTexture;
         private readonly SpriteFont _regularFont;
@@ -46,7 +46,7 @@ namespace LD46.Views {
         public LevelView(GraphicsDevice graphicsDevice, ContentManager content,
             SpriteBatch spriteBatch, IRenderTargetStack renderTargetStack, 
             BackgroundView backgroundView, TileMapView tileMapView, EntitiesView entitiesView, 
-            WaterView waterView, ParticlesView particlesView) {
+            WaterView waterView, ParticlesView particlesView, ParticleFactory particleFactory) {
 
             _graphicsDevice = graphicsDevice;
             _spriteBatch = spriteBatch;
@@ -55,6 +55,7 @@ namespace LD46.Views {
             TileMap = tileMapView;
             Entities = entitiesView;
             Particles = particlesView;
+            _particleFactory = particleFactory;
             _waterView = waterView;
 
             _waterEffect = content.Load<Effect>("Effects/Water");
@@ -117,6 +118,15 @@ namespace LD46.Views {
             if (_flickerTimer >= _flickerTime) {
                 _flickerTimer -= _flickerTime;
                 _lightRadius = 400f + (float)_random.NextDouble() * 20f;
+            }
+
+            for (int i = 0; i < level.WindChannels.Count; i++) {
+                float channel = level.WindChannels[i];
+
+                Particles.Add(_particleFactory.CreateWindParticle(
+                    new Vector2((i % 2 == 0 ? -500f : 500f) + level.TileMap.Width * GraphicsConstants.TileSize * (float)_random.NextDouble(),
+                        GraphicsConstants.PhysicsToView(channel) - GraphicsConstants.TileSize * 4f + (float)_random.NextDouble() * 8f * GraphicsConstants.TileSize),
+                    new Vector2(i % 2 == 0 ? 1f : -1f, 0f)));
             }
         }
 

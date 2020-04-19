@@ -119,5 +119,19 @@ namespace LD46.Views {
 
             return particle;
         }
+
+        public Particle CreateWindParticle(Vector2 position, Vector2 direction) {
+            var particle = new Particle(_particleTexture, 3f) {
+                Position = position,
+                Velocity = direction * 500f,
+                AngularVelocity = 10f,
+                ScaleFunc = p => new Vector2(0.5f * (float)Math.Sin(p * MathHelper.Pi))
+            };
+
+            particle.Sprite.LayerDepth = 0.09f;
+            particle.Sprite.Scale = Vector2.Zero;
+
+            return particle;
+        }
     }
 }

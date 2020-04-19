@@ -26,6 +26,42 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/Regular.spritefont
 
+#begin Sounds/Click1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Click1.wav
+
+#begin Sounds/Click2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Click2.wav
+
+#begin Sounds/Click3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Click3.wav
+
+#begin Sounds/Thud1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Thud1.wav
+
+#begin Sounds/Thud2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Thud2.wav
+
+#begin Sounds/Thud3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Thud3.wav
+
 #begin Textures/BackgroundTiles.png
 /importer:TextureImporter
 /processor:TextureProcessor
