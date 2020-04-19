@@ -158,6 +158,8 @@ namespace LD46.Views {
 
                 Particles.Draw(_camera);
                 Entities.Draw(level, _camera);
+
+                TileMap.DrawGrates(level, _camera);
             }
             _renderTargetStack.Pop();
 

@@ -104,7 +104,6 @@ namespace LD46 {
                 MaxPlatformWidth = 8,
                 TextureOffset = 0,
                 WaterSpeed = 1f,
-                HasWind = true,
             };
 
             LevelSettings level2Settings = new LevelSettings {
@@ -112,8 +111,9 @@ namespace LD46 {
                 SolidChance = 1f / 4f,
                 MinPlatformWidth = 1,
                 MaxPlatformWidth = 7,
-                //TextureOffset = 2,
+                TextureOffset = 2,
                 WaterSpeed = 2f,
+                HasGrates = true,
             };
             level1Settings.NextLevel = level2Settings;
 
@@ -122,12 +122,13 @@ namespace LD46 {
                 SolidChance = 1f / 3f,
                 MinPlatformWidth = 1,
                 MaxPlatformWidth = 5,
-                //TextureOffset = 4,
+                TextureOffset = 4,
                 WaterSpeed = 3f,
+                HasWind = true,
             };
             level2Settings.NextLevel = level3Settings;
 
-            _screens.TransitionTo<LevelScreen, LevelSettings>(level1Settings);
+            _screens.TransitionTo<LevelScreen, LevelSettings>(level2Settings);
         }
     }
 }

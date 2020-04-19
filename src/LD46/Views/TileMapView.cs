@@ -32,11 +32,40 @@ namespace LD46.Views {
             _spriteBatch.End();
         }
 
+        public void DrawGrates(Level level, Camera2D camera) {
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: camera.GetTransformMatrix());
+
+            for (int y = 0; y < level.TileMap.Height; y++) {
+                for (int x = 0; x < level.TileMap.Width; x++) {
+                    DrawGrate(x, y, level.TileMap);
+                }
+            }
+
+            _spriteBatch.End();
+        }
+
         private void DrawTile(int x, int y, TileMap tileMap) {
+            TileCollisionType collisionType = tileMap[x, y].CollisionType;
+
+            if (collisionType == TileCollisionType.Grate) {
+                return;
+            }
+
             Rectangle sourceRectangle = GetSourceRectangle(x, y, tileMap);
 
             _spriteBatch.Draw(_tilesTexture, new Vector2(x + 0.5f, y + 0.5f) * GraphicsConstants.TileSize, sourceRectangle, 
                 Color.White, 0f, new Vector2(32f, 32f), Vector2.One, SpriteEffects.None, 0f);
+        }
+
+        private void DrawGrate(int x, int y, TileMap tileMap) {
+            TileCollisionType collisionType = tileMap[x, y].CollisionType;
+
+            if (collisionType == TileCollisionType.Grate) {
+                Rectangle sourceRectangle = GetSourceRectangle(x, y, tileMap);
+
+                _spriteBatch.Draw(_tilesTexture, new Vector2(x + 0.5f, y + 0.5f) * GraphicsConstants.TileSize, sourceRectangle,
+                    Color.White, 0f, new Vector2(32f, 32f), Vector2.One, SpriteEffects.None, 0f);
+            }
         }
 
         private Rectangle GetSourceRectangle(int x, int y, TileMap tileMap) {
@@ -66,19 +95,38 @@ namespace LD46.Views {
                 case TileCollisionType.Solid: {
                     ty = 1;
 
-                    if (tileMap.IsSolid(x + 1, y)) {
-                        if (tileMap.IsSolid(x - 1, y)) {
+                    if (tileMap.IsSolid(x + 1, y, ignoreGrates: true)) {
+                        if (tileMap.IsSolid(x - 1, y, ignoreGrates: true)) {
                             tx = 3;
                         }
                         else {
                             tx = 2;
                         }
                     }
-                    else if (tileMap.IsSolid(x - 1, y)) {
+                    else if (tileMap.IsSolid(x - 1, y, ignoreGrates: true)) {
                         tx = 4;
                     }
                     else {
                         tx = 1;
+                    }
+                    break;
+                }
+                case TileCollisionType.Grate: {
+                    ty = 1;
+
+                    if (tileMap.IsSolid(x + 1, y, ignoreGrates: false)) {
+                        if (tileMap.IsSolid(x - 1, y, ignoreGrates: false)) {
+                            tx = 7;
+                        }
+                        else {
+                            tx = 6;
+                        }
+                    }
+                    else if (tileMap.IsSolid(x - 1, y, ignoreGrates: false)) {
+                        tx = 8;
+                    }
+                    else {
+                        tx = 5;
                     }
                     break;
                 }

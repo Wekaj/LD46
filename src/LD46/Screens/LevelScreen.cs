@@ -132,6 +132,7 @@ namespace LD46.Screens {
             torchBody.Bounds = new RectangleF(2f / 32f, 2f / 32f, 28f / 32f, 28f / 32f);
             torchBody.Gravity = new Vector2(0f, 18.8f);
             torchBody.BounceFactor = 0.5f;
+            torchBody.IgnoresGrates = true;
 
             _torchEntity.BodyID = torchBody.ID;
 

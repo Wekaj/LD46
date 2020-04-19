@@ -15,6 +15,7 @@ namespace LD46.Levels {
             var random = new Random();
             for (int y = 0; y < TileMap.Height; y++) {
                 int platforms = 0;
+                int grates = 0;
                 bool solid = false;
 
                 for (int x = 0; x < TileMap.Width; x++) {
@@ -30,7 +31,17 @@ namespace LD46.Levels {
                         TileMap[x, y].CollisionType = TileCollisionType.Platform;
                     }
                     else if (platforms > 0) {
-                        TileMap[x, y].CollisionType = solid ? TileCollisionType.Solid : TileCollisionType.Platform;
+                        if (settings.HasGrates && random.Next(8) == 0) {
+                            grates = random.Next(2, 5);
+                        }
+
+                        if (grates > 0) {
+                            TileMap[x, y].CollisionType = TileCollisionType.Grate;
+                            grates--;
+                        }
+                        else {
+                            TileMap[x, y].CollisionType = solid ? TileCollisionType.Solid : TileCollisionType.Platform;
+                        }
                         platforms--;
                     }
                 }

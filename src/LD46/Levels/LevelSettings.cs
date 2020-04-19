@@ -8,5 +8,6 @@
         public int TextureOffset { get; set; }
         public float WaterSpeed { get; set; } = 1f;
         public bool HasWind { get; set; } = false;
+        public bool HasGrates { get; set; } = false;
     }
 }
