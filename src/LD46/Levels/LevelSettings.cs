@@ -11,5 +11,6 @@
         public bool HasWind { get; set; } = false;
         public bool HasGrates { get; set; } = false;
         public bool IsOpening { get; set; } = false;
+        public bool IsVictory { get; set; } = false;
     }
 }

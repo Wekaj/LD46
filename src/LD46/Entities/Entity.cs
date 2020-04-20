@@ -30,5 +30,6 @@
         public float DashTimer { get; set; } = 0f;
 
         public bool IsBlowable { get; set; } = false;
+        public bool Sleeping { get; set; } = false;
     }
 }

@@ -8,7 +8,15 @@ using System.Collections.Generic;
 namespace LD46.Levels {
     public class Level {
         public Level(LevelSettings settings) {
-            TileMap = new TileMap(settings.IsOpening ? 20 : 32, settings.Height, PhysicsConstants.TileSize);
+            int width = 32;
+            if (settings.IsOpening) {
+                width = 20;
+            }
+            else if (settings.IsVictory) {
+                width = 16;
+            }
+
+            TileMap = new TileMap(width, settings.Height, PhysicsConstants.TileSize);
             PhysicsWorld = new PhysicsWorld();
             EntityWorld = new EntityWorld();
 
@@ -38,6 +46,23 @@ namespace LD46.Levels {
                 }
 
                 FinishHeight = 22.5f;
+            }
+            else if (settings.IsVictory) {
+                for (int y = 0; y < TileMap.Height; y++) {
+                    for (int x = 0; x < TileMap.Width; x++) {
+                        if (x == 0 || y == 0 || x == TileMap.Width - 1 | y == TileMap.Height - 1) {
+                            TileMap[x, y].CollisionType = TileCollisionType.Solid;
+                        }
+                    }
+                }
+
+                for (int x = 1; x < TileMap.Width - 1; x++) {
+                    if (x > 7 && x < 14) {
+                        TileMap[x, TileMap.Height - 5].CollisionType = TileCollisionType.Platform;
+                    }
+                }
+
+                FinishHeight = -100f;
             }
             else {
                 for (int y = 0; y < TileMap.Height; y++) {

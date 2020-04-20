@@ -140,7 +140,15 @@ namespace LD46 {
             };
             level2Settings.NextLevel = level3Settings;
 
-            _screens.TransitionTo<LevelScreen, LevelSettings>(level0Settings);
+            LevelSettings victorySettings = new LevelSettings {
+                Height = 8,
+                TextureOffset = 2,
+                BackgroundTile = 0,
+                IsVictory = true
+            };
+            level3Settings.NextLevel = victorySettings;
+
+            _screens.TransitionTo<LevelScreen, LevelSettings>(victorySettings);
         }
     }
 }

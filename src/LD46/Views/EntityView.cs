@@ -70,7 +70,10 @@ namespace LD46.Views {
 
             switch (_profile) {
                 case EntityViewProfile.Player: {
-                    if (entity.HasLostAllHope) {
+                    if (entity.Sleeping) {
+                        PlayAnimation(_animations.PlayerSleeping);
+                    }
+                    else if (entity.HasLostAllHope) {
                         PlayAnimation(_animations.PlayerDefeatedRight, _animations.PlayerDefeatedLeft);
                     }
                     else if (entity.Kick) {
@@ -95,13 +98,16 @@ namespace LD46.Views {
                     break;
                 }
                 case EntityViewProfile.Torch: {
-                    if (body.Contact != Vector2.Zero && body.Velocity.Length() > 3f) {
+                    if (body.Contact != Vector2.Zero && body.Velocity.Length() > 5f) {
                         _soundEffects
                             .GetRandom(_soundEffects.Thud1, _soundEffects.Thud2, _soundEffects.Thud3)
                             .Play();
                     }
 
-                    if (entity.IsPutOut) {
+                    if (entity.Sleeping) {
+                        PlayAnimation(_animations.Fireplace);
+                    }
+                    else if (entity.IsPutOut) {
                         PlayAnimation(_animations.TorchOut);
                     }
                     else {

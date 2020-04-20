@@ -101,6 +101,12 @@ namespace LD46.Views {
             }
             .AddFrame(new Rectangle(0, 256, 64, 64), 0.1f);
 
+            PlayerSleeping = new SingleTextureAnimation(playerTexture) {
+                Origin = new Vector2(32f, 32f),
+                IsLooping = true
+            }
+            .AddFrame(new Rectangle(0, 320, 64, 64), 0.1f);
+
             Texture2D torchTexture = content.Load<Texture2D>("Textures/Torch");
 
             Torch = new SingleTextureAnimation(torchTexture) {
@@ -114,6 +120,13 @@ namespace LD46.Views {
                 IsLooping = true
             }
             .AddFrame(new Rectangle(32, 0, 32, 32), 1f);
+
+            Fireplace = new SingleTextureAnimation(torchTexture) {
+                Origin = new Vector2(16f, 16f),
+                IsLooping = true
+            }
+            .AddFrame(new Rectangle(64, 0, 32, 32), 0.5f)
+            .AddFrame(new Rectangle(96, 0, 32, 32), 0.5f);
         }
 
         public IAnimation PlayerIdleRight { get; }
@@ -126,8 +139,10 @@ namespace LD46.Views {
         public IAnimation PlayerKickLeft { get; }
         public IAnimation PlayerDefeatedRight { get; }
         public IAnimation PlayerDefeatedLeft { get; }
+        public IAnimation PlayerSleeping { get; }
 
         public IAnimation Torch { get; }
         public IAnimation TorchOut { get; }
+        public IAnimation Fireplace { get; }
     }
 }

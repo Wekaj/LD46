@@ -43,8 +43,16 @@ namespace LD46.Screens {
             _torchEntity = Level.EntityWorld.CreateEntity();
             _playerEntity = Level.EntityWorld.CreateEntity();
 
-            SetupTorch(args.IsOpening ? Level.TileMap.Height - 2 : Level.TileMap.Height - 21);
-            SetupPlayer(_bindings, args.IsOpening ? Level.TileMap.Height - 3 :  Level.TileMap.Height - 22);
+            float playerY = Level.TileMap.Height - 22;
+            float torchY = Level.TileMap.Height - 21;
+
+            if (args.IsOpening || args.IsVictory) {
+                playerY = Level.TileMap.Height - 3;
+                torchY = Level.TileMap.Height - 2;
+            }
+
+            SetupTorch(torchY, args.IsVictory ? 1f : 0f);
+            SetupPlayer(_bindings, playerY, args.IsVictory ? -1f : 0f);
 
             _levelView.TorchEntityID = _torchEntity.ID;
             _levelView.PlayerEntityID = _playerEntity.ID;
@@ -56,6 +64,23 @@ namespace LD46.Screens {
                 Level.WaterLevel = 0.5f;
 
                 _levelView.HideProgress = true;
+            }
+
+            if (args.IsVictory) {
+                Level.WaterLevel = -50f;
+
+                _levelView.HideProgress = true;
+
+                _levelView.SetLighting(200f, 0.1f);
+            }
+
+            if (args.IsVictory) {
+                _playerEntity.Brain = null;
+
+                _torchEntity.Sleeping = true;
+                _playerEntity.Sleeping = true;
+
+                _levelView.TheWinnerIsYou = true;
             }
         }
 
@@ -120,9 +145,9 @@ namespace LD46.Screens {
             _levelView.Draw(Level);
         }
 
-        private void SetupPlayer(InputBindings bindings, float y) {
+        private void SetupPlayer(InputBindings bindings, float y, float xOffset = 0f) {
             Body playerBody = Level.PhysicsWorld.CreateBody();
-            playerBody.Position = new Vector2(Level.TileMap.Width / 2f - 2f, y);
+            playerBody.Position = new Vector2(Level.TileMap.Width / 2f - 2f + xOffset, y);
             playerBody.Bounds = new RectangleF(18f / 32f, 18f / 32f, 28f / 32f, 30f / 32f);
             playerBody.Gravity = new Vector2(0f, 37.5f);
 
@@ -135,9 +160,9 @@ namespace LD46.Screens {
             _levelView.Start = playerBody.Position;
         }
 
-        private void SetupTorch(float y) {
+        private void SetupTorch(float y, float xOffset = 0f) {
             Body torchBody = Level.PhysicsWorld.CreateBody();
-            torchBody.Position = new Vector2(Level.TileMap.Width / 2f - 1f, y);
+            torchBody.Position = new Vector2(Level.TileMap.Width / 2f - 1f + xOffset, y);
             torchBody.Bounds = new RectangleF(2f / 32f, 2f / 32f, 28f / 32f, 28f / 32f);
             torchBody.Gravity = new Vector2(0f, 18.8f);
             torchBody.BounceFactor = 0.5f;

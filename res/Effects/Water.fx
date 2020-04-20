@@ -35,6 +35,7 @@ float2 Position;
 float2 Dimensions;
 float2 Light1;
 float Radius;
+float Ambience;
 
 struct VertexShaderOutput
 {
@@ -59,7 +60,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	float2 actualPos = Position + (input.TextureCoordinates + flow / 40.0) * Dimensions;
 	float light1Dist = distance(Light1, actualPos);
 
-	return modified * max(saturate(cos(min(light1Dist / Radius, 3.14 / 2.0))), 0.5);
+	return modified * max(saturate(cos(min(light1Dist / Radius, 3.14 / 2.0))), Ambience);
 }
 
 technique SpriteDrawing

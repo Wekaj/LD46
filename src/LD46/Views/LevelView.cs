@@ -44,6 +44,9 @@ namespace LD46.Views {
         private float _flickerTimer = 0f;
         private const float _flickerTime = 0.075f;
 
+        private float _ambience = 0.5f;
+        private float _radius = 400f;
+
         public LevelView(GraphicsDevice graphicsDevice, ContentManager content,
             SpriteBatch spriteBatch, IRenderTargetStack renderTargetStack, 
             BackgroundView backgroundView, TileMapView tileMapView, EntitiesView entitiesView, 
@@ -94,6 +97,7 @@ namespace LD46.Views {
         public Vector2 Start { get; set; }
 
         public bool HideProgress { get; set; } = false;
+        public bool TheWinnerIsYou { get; set; } = false;
 
         public bool HasFadedOut => _fadeOutOpacity >= 1f;
 
@@ -125,7 +129,7 @@ namespace LD46.Views {
             _flickerTimer += deltaTime;
             if (_flickerTimer >= _flickerTime) {
                 _flickerTimer -= _flickerTime;
-                _lightRadius = 400f + (float)_random.NextDouble() * 20f;
+                _lightRadius = _radius + (float)_random.NextDouble() * 20f;
             }
 
             for (int i = 0; i < level.WindChannels.Count; i++) {
@@ -136,6 +140,11 @@ namespace LD46.Views {
                         GraphicsConstants.PhysicsToView(channel) - GraphicsConstants.TileSize * 4f + (float)_random.NextDouble() * 8f * GraphicsConstants.TileSize),
                     new Vector2(i % 2 == 0 ? 1f : -1f, 0f)));
             }
+        }
+
+        public void SetLighting(float radius, float ambience) {
+            _radius = radius;
+            _ambience = ambience;
         }
 
         public void Draw(Level level) {
@@ -162,6 +171,14 @@ namespace LD46.Views {
                     _spriteBatch.DrawString(_regularFont, "You can chain kicks and dashes...", new Vector2(80f, 900f), Color.White);
                     _spriteBatch.DrawString(_regularFont, "... if you hit your torch.", new Vector2(300f, 800f), Color.White);
                     _spriteBatch.DrawString(_regularFont, "Psst... you can press P\nto skip this tutorial.", new Vector2(-350f, 2170f), Color.White);
+
+                    _spriteBatch.End();
+                }
+
+                if (TheWinnerIsYou) {
+                    _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: _camera.GetTransformMatrix());
+
+                    _spriteBatch.DrawString(_regularFont, "You win! Sleep tight.", new Vector2(80f, 270f), Color.White);
 
                     _spriteBatch.End();
                 }
@@ -211,6 +228,7 @@ namespace LD46.Views {
             }
 
             _waterEffect.Parameters["Radius"].SetValue(_lightRadius);
+            _waterEffect.Parameters["Ambience"].SetValue(_ambience);
 
             _spriteBatch.Begin(effect: _waterEffect);
             _spriteBatch.Draw(_worldTarget, Vector2.Zero, Color.White);
