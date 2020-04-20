@@ -19,7 +19,7 @@ namespace LD46.Views {
         private readonly ParticleFactory _particleFactory;
         private readonly Effect _waterEffect;
         private readonly Texture2D _flowMapTexture, _pixelTexture, _arrowTexture, _finishTexture, _progressTexture,
-            _playerIconTexture, _torchIconTexture;
+            _playerIconTexture, _torchIconTexture, _gradientTexture;
         private readonly SpriteFont _regularFont;
 
         private RenderTarget2D _worldTarget, _waterTarget;
@@ -47,6 +47,9 @@ namespace LD46.Views {
         private float _ambience = 0.5f;
         private float _radius = 400f;
 
+        private float _headerTimer = 0f;
+        private const float _headerTime = 3f;
+
         public LevelView(GraphicsDevice graphicsDevice, ContentManager content,
             SpriteBatch spriteBatch, IRenderTargetStack renderTargetStack, 
             BackgroundView backgroundView, TileMapView tileMapView, EntitiesView entitiesView, 
@@ -70,6 +73,7 @@ namespace LD46.Views {
             _progressTexture = content.Load<Texture2D>("Textures/Progress");
             _playerIconTexture = content.Load<Texture2D>("Textures/PlayerIcon");
             _torchIconTexture = content.Load<Texture2D>("Textures/TorchIcon");
+            _gradientTexture = content.Load<Texture2D>("Textures/Gradient");
             _regularFont = content.Load<SpriteFont>("Fonts/Regular");
 
             _worldTarget = CreateRenderTarget();
@@ -101,6 +105,8 @@ namespace LD46.Views {
 
         public bool HasFadedOut => _fadeOutOpacity >= 1f;
 
+        public string? Header { get; set; }
+
         public void ShowLoseScreen() {
             _showLoseScreen = true;
         }
@@ -111,6 +117,10 @@ namespace LD46.Views {
 
         public void Update(Level level, float deltaTime) {
             _shaderTimer += deltaTime;
+
+            if (_headerTimer < _headerTime) {
+                _headerTimer += deltaTime;
+            }
 
             Entities.Update(level, deltaTime);
             _waterView.Update(deltaTime);
@@ -298,6 +308,13 @@ namespace LD46.Views {
                 _graphicsDevice.Viewport.Bounds.Center.ToVector2() - _regularFont.MeasureString("Press R to restart.") / 2f, Color.White * _loseScreenOpacity);
 
             _spriteBatch.Draw(_pixelTexture, _graphicsDevice.Viewport.Bounds, Color.Black * _fadeOutOpacity);
+
+            if (Header != null) {
+                float headerOpacity = MathHelper.Clamp(1f - _headerTimer / _headerTime, 0f, 1f);
+
+                _spriteBatch.Draw(_gradientTexture, Vector2.Zero, Color.White * headerOpacity);
+                _spriteBatch.DrawString(_regularFont, Header, new Vector2(_graphicsDevice.Viewport.Bounds.Center.X - _regularFont.MeasureString(Header).X / 2f, 24f), Color.White * headerOpacity);
+            }
 
             _spriteBatch.End();
         }

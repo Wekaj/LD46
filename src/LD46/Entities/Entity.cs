@@ -31,5 +31,7 @@
 
         public bool IsBlowable { get; set; } = false;
         public bool Sleeping { get; set; } = false;
+
+        public bool PlayedHiss { get; set; } = false;
     }
 }

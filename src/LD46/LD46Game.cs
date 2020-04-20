@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SimpleInjector;
+using System;
 
 namespace LD46 {
     public class LD46Game : Game {
@@ -79,6 +80,7 @@ namespace LD46 {
             _bindings.Set(Bindings.Drop, new KeyboardBinding(Keys.Down), new KeyboardBinding(Keys.S));
             _bindings.Set(Bindings.Jump, new KeyboardBinding(Keys.Space));
             _bindings.Set(Bindings.Dash, new KeyboardBinding(Keys.LeftShift), new KeyboardBinding(Keys.RightShift));
+            _bindings.Set(Bindings.Skip, new KeyboardBinding(Keys.P));
         }
 
         private Container CreateContainer() {
@@ -97,7 +99,10 @@ namespace LD46 {
         private void InitializeScreens(Container container) {
             _screens.AddScreenType(() => container.GetInstance<LevelScreen>());
 
-            LevelSettings level0Settings = new LevelSettings {
+            int smallHeight = 80;
+            int largeHeight = 120;
+
+            Level0Settings = new LevelSettings {
                 Height = 64,
                 TextureOffset = 0,
                 BackgroundTile = 1,
@@ -105,40 +110,81 @@ namespace LD46 {
                 IsOpening = true,
             };
 
-            LevelSettings level1Settings = new LevelSettings {
-                Height = 100,
+            LevelSettings depths1 = new LevelSettings {
+                Height = smallHeight,
+                SolidChance = 1f / 12f,
+                MinPlatformWidth = 3,
+                MaxPlatformWidth = 8,
+                TextureOffset = 0,
+                BackgroundTile = 1,
+                WaterSpeed = 1f,
+                Name = "The Depths, Part 1",
+            };
+            Level0Settings.NextLevel = depths1;
+
+            LevelSettings depths2 = new LevelSettings {
+                Height = largeHeight,
                 SolidChance = 1f / 6f,
                 MinPlatformWidth = 2,
                 MaxPlatformWidth = 8,
                 TextureOffset = 0,
                 BackgroundTile = 1,
-                WaterSpeed = 1f,
+                WaterSpeed = 2f,
+                Name = "The Depths, Part 2",
             };
-            level0Settings.NextLevel = level1Settings;
+            depths1.NextLevel = depths2;
 
-            LevelSettings level2Settings = new LevelSettings {
-                Height = 128,
+            LevelSettings furnace1 = new LevelSettings {
+                Height = smallHeight,
+                SolidChance = 1f / 6f,
+                MinPlatformWidth = 2,
+                MaxPlatformWidth = 7,
+                TextureOffset = 2,
+                BackgroundTile = 0,
+                WaterSpeed = 1.25f,
+                HasGrates = true,
+                Name = "The Furnace, Part 1",
+            };
+            depths2.NextLevel = furnace1;
+
+            LevelSettings furnace2 = new LevelSettings {
+                Height = largeHeight,
                 SolidChance = 1f / 4f,
                 MinPlatformWidth = 1,
                 MaxPlatformWidth = 7,
                 TextureOffset = 2,
                 BackgroundTile = 0,
-                WaterSpeed = 2f,
+                WaterSpeed = 2.25f,
                 HasGrates = true,
+                Name = "The Furnace, Part 2",
             };
-            level1Settings.NextLevel = level2Settings;
+            furnace1.NextLevel = furnace2;
 
-            LevelSettings level3Settings = new LevelSettings {
-                Height = 128,
-                SolidChance = 1f / 3f,
-                MinPlatformWidth = 1,
-                MaxPlatformWidth = 5,
+            LevelSettings freezer1 = new LevelSettings {
+                Height = smallHeight,
+                SolidChance = 1f / 4f,
+                MinPlatformWidth = 2,
+                MaxPlatformWidth = 6,
                 TextureOffset = 4,
                 BackgroundTile = 2,
-                WaterSpeed = 2.5f,
+                WaterSpeed = 1.5f,
                 HasWind = true,
+                Name = "The Freezer, Part 1",
             };
-            level2Settings.NextLevel = level3Settings;
+            furnace2.NextLevel = freezer1;
+
+            LevelSettings freezer2 = new LevelSettings {
+                Height = largeHeight,
+                SolidChance = 1f / 3f,
+                MinPlatformWidth = 1,
+                MaxPlatformWidth = 6,
+                TextureOffset = 4,
+                BackgroundTile = 2,
+                WaterSpeed = 2.75f,
+                HasWind = true,
+                Name = "The Freezer, Part 2",
+            };
+            freezer1.NextLevel = freezer2;
 
             LevelSettings victorySettings = new LevelSettings {
                 Height = 8,
@@ -146,9 +192,11 @@ namespace LD46 {
                 BackgroundTile = 0,
                 IsVictory = true
             };
-            level3Settings.NextLevel = victorySettings;
+            freezer2.NextLevel = victorySettings;
 
-            _screens.TransitionTo<LevelScreen, LevelSettings>(victorySettings);
+            _screens.TransitionTo<LevelScreen, LevelSettings>(Level0Settings);
         }
+
+        public static LevelSettings? Level0Settings { get; private set; }
     }
 }

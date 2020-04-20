@@ -12,5 +12,6 @@
         public bool HasGrates { get; set; } = false;
         public bool IsOpening { get; set; } = false;
         public bool IsVictory { get; set; } = false;
+        public string? Name { get; set; }
     }
 }

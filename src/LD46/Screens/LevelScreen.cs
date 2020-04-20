@@ -26,6 +26,9 @@ namespace LD46.Screens {
         private bool _hasWon = false;
         private float _winTimer = 0f;
 
+        private bool _winnerIsYou = false;
+        private bool _toot = false;
+
         public LevelScreen(ScreenManager screens, InputBindings bindings, SoundEffects soundEffects, LevelView levelView) {
             _screens = screens;
             _bindings = bindings;
@@ -64,6 +67,8 @@ namespace LD46.Screens {
                 Level.WaterLevel = 0.5f;
 
                 _levelView.HideProgress = true;
+
+                _toot = true;
             }
 
             if (args.IsVictory) {
@@ -81,12 +86,25 @@ namespace LD46.Screens {
                 _playerEntity.Sleeping = true;
 
                 _levelView.TheWinnerIsYou = true;
+
+                _winnerIsYou = true;
             }
+
+            _levelView.Header = args.Name;
         }
 
         public void Update(GameTime gameTime) {
             if (_bindings.JustPressed(Bindings.Restart)) {
-                _screens.TransitionTo<LevelScreen, LevelSettings>(_settings);
+                if (_winnerIsYou) {
+                    _screens.TransitionTo<LevelScreen, LevelSettings>(LD46Game.Level0Settings!);
+                }
+                else {
+                    _screens.TransitionTo<LevelScreen, LevelSettings>(_settings);
+                }
+            }
+
+            if (_toot && _bindings.JustPressed(Bindings.Skip)) {
+                _screens.TransitionTo<LevelScreen, LevelSettings>(_settings.NextLevel);
             }
 
             if (_levelView.HasFadedOut && _settings.NextLevel != null) {

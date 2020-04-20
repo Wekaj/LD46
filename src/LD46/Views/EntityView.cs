@@ -35,7 +35,7 @@ namespace LD46.Views {
 
         private readonly Random _random = new Random();
 
-        private Vector2 _previousTorchPosition;
+        private Vector2? _previousTorchPosition;
 
         public EntityView(int entityID, EntityViewProfile profile, Texture2D texture, 
             EntityAnimations animations, ParticleFactory particleFactory, SoundEffects soundEffects) {
@@ -109,6 +109,12 @@ namespace LD46.Views {
                     }
                     else if (entity.IsPutOut) {
                         PlayAnimation(_animations.TorchOut);
+
+                        if (!entity.PlayedHiss) {
+                            _soundEffects.Hiss.Play();
+
+                            entity.PlayedHiss = true;
+                        }
                     }
                     else {
                         PlayAnimation(_animations.Torch);
@@ -120,10 +126,12 @@ namespace LD46.Views {
 
                         var particlePosition = GraphicsConstants.PhysicsToView(body.Position + body.Bounds.Center) + Rotate(torchTip - torchCenter, entity.Rotation);
 
-                        Particles?.Add(_particleFactory.CreateBlackLineParticle(particlePosition, _previousTorchPosition));
-                        Particles?.Add(_particleFactory.CreateRedLineParticle(particlePosition, _previousTorchPosition));
-                        Particles?.Add(_particleFactory.CreateOrangeLineParticle(particlePosition, _previousTorchPosition));
-                        Particles?.Add(_particleFactory.CreateYellowLineParticle(particlePosition, _previousTorchPosition));
+                        if (_previousTorchPosition != null) {
+                            Particles?.Add(_particleFactory.CreateBlackLineParticle(particlePosition, _previousTorchPosition.Value));
+                            Particles?.Add(_particleFactory.CreateRedLineParticle(particlePosition, _previousTorchPosition.Value));
+                            Particles?.Add(_particleFactory.CreateOrangeLineParticle(particlePosition, _previousTorchPosition.Value));
+                            Particles?.Add(_particleFactory.CreateYellowLineParticle(particlePosition, _previousTorchPosition.Value));
+                        }
 
                         _previousTorchPosition = particlePosition;
                     }

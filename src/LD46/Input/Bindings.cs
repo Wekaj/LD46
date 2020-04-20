@@ -6,5 +6,6 @@
         public static string Drop { get; } = "Drop";
         public static string Jump { get; } = "Jump";
         public static string Dash { get; } = "Dash";
+        public static string Skip { get; } = "Skip";
     }
 }

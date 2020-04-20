@@ -44,6 +44,12 @@
 /processorParam:Quality=Best
 /build:Sounds/Click3.wav
 
+#begin Sounds/Hiss.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/Hiss.wav
+
 #begin Sounds/Thud1.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -97,6 +103,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/FlowMap.png
+
+#begin Textures/Gradient.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Gradient.png
 
 #begin Textures/Particle.png
 /importer:TextureImporter

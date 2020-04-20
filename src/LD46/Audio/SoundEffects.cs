@@ -14,6 +14,8 @@ namespace LD46.Audio {
             Thud1 = content.Load<SoundEffect>("Sounds/Thud1");
             Thud2 = content.Load<SoundEffect>("Sounds/Thud2");
             Thud3 = content.Load<SoundEffect>("Sounds/Thud3");
+
+            Hiss = content.Load<SoundEffect>("Sounds/Hiss");
         }
 
         public SoundEffect Click1 { get; }
@@ -23,6 +25,8 @@ namespace LD46.Audio {
         public SoundEffect Thud1 { get; }
         public SoundEffect Thud2 { get; }
         public SoundEffect Thud3 { get; }
+
+        public SoundEffect Hiss { get; }
 
         public SoundEffect GetRandom(params SoundEffect[] soundEffects) {
             return soundEffects[_random.Next(soundEffects.Length)];
