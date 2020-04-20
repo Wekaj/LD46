@@ -44,6 +44,8 @@ namespace LD46 {
             _pixelScaler.Scale = 1;
 
             InitializeScreens(container);
+
+            Window.Title = "Torchkick";
         }
 
         protected override void LoadContent() {
